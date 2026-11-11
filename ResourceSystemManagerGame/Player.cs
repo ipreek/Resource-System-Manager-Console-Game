@@ -37,7 +37,6 @@ public class Player : Entity
     }
     public void RemoveResource(Resource res, int ammount)
     {
-        lock (_buildingLock){
         int resAmm = Storage[res];
         if(ammount >=0){
             if (resAmm - ammount < 0)
@@ -46,13 +45,13 @@ public class Player : Entity
             }
             else
             {
-                Storage[res] -= ammount;
+                lock(_buildingLock){
+                Storage[res] -= ammount;}
             }
         }
         else
         {
             throw new InvalidOperationException();
-        }
         }
     }
 
@@ -70,7 +69,8 @@ public class Player : Entity
     public void AddMoney(float plus)
     {
         float defaultMoney = this.Money; //нужно для проверки, если дефолтмани меньше 0, а итоговое значение больше нуля, то убирает статус долга
-        this.Money += plus;
+        lock(_buildingLock){
+        this.Money += plus;}
         if (defaultMoney<0 && this.Money>=0)
         {
             this.HasDebt = false;
@@ -80,7 +80,8 @@ public class Player : Entity
     public void RemoveMoney(float minus)
     {
         float defaultMoney = this.Money; //нужно для проверки, если дефолтмани больше нуля, а итогове значение меньше нуля, то дает статус долга
-        this.Money -= minus;
+        lock (_buildingLock){
+        this.Money -= minus;}
         if (this.Money < 0 && defaultMoney >=0)
         {
             this.HasDebt = true;
@@ -103,12 +104,12 @@ public class Player : Entity
     }
     public List<Building> GetBuildings()
     {
-        lock(_buildingLock){
         List<Building> newList = new List<Building>{};
         foreach(Building b in this.playerBuildings)
         {
             newList.Add(b);
         }
+        lock(_buildingLock){
         return newList;
         }
     }
@@ -132,14 +133,13 @@ public class Player : Entity
 
     public Dictionary<Resource, int> GetStorage()
     {
-        lock (_buildingLock){
         Dictionary<Resource, int> resDict = new Dictionary<Resource, int>();
         foreach(var res in Storage)
         {
             resDict.Add(res.Key, res.Value);
         }
-        return resDict;
-        }
+        lock(_buildingLock){
+        return resDict;}
     }
 
     public Player()

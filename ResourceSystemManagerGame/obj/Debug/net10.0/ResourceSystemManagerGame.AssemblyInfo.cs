@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ResourceSystemManagerGame")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4361d31e30b3d7b003d77ebd6e30f9a986117401")]
 [assembly: System.Reflection.AssemblyProductAttribute("ResourceSystemManagerGame")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ResourceSystemManagerGame")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -51,15 +51,21 @@ public static class GameMethods
         switch (line)
         {
             case "1":
-            //Console.Clear();
+            #if !DEBUG
+            Console.Clear();
+            #endif
                 return NewGame();
             case "2":
                 //GameMethods.Load();
-                //Console.Clear();
+                #if !DEBUG
+                Console.Clear();
+                #endif
                 Gameplay.Exit();
                 return null;
             case "3":
-                //Console.Clear();
+            #if !DEBUG
+                Console.Clear();
+                #endif
                 Gameplay.Exit();
                 return null;
             default:
@@ -102,7 +108,7 @@ public static class GameMethods
 
     public static void Waiting(Player player)
     {
-        Console.ReadLine();
+        Thread.Sleep(700);
         Gameplay.Update(player);
     }
 
@@ -128,10 +134,10 @@ public static class GameMethods
         
             foreach (var b in buildings)
             {
-                Console.Write($"Build {index1}: {b.Name}, lvl: {b.Level}({b.Expirience}/{b.GetXpCapForBuild()}), Resource type: {b.ProduceType}");
+                Console.Write($"Build {index1}: {b.Name}, lvl: {b.Level}({b.Expirience}/{b.GetXpCapForBuild()}), Resource type: {b.ProduceType.Name}");
                 if (b.ProduceType.IsProducable == true)
                 {
-                    Console.Write($", Consumed resource: {b.ProduceType.ResourceProducedFrom}; ");
+                    Console.Write($", Consumed resource: {b.ProduceType.ResourceProducedFrom.Name}; ");
             }
             else
             {
@@ -199,6 +205,9 @@ public static class GameMethods
             break;
             case "7":
                 Gameplay.Update(player);
+            break;
+            default:
+            Gameplay.Update(player);
             break;
         }
     }

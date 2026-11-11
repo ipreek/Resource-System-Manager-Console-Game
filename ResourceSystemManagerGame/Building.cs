@@ -23,13 +23,6 @@ public class Building : Entity
         set {produceType = value;}
     }
 
-    public void Timer()
-    {
-        int sec = 0;
-        TimerCallback tm = new TimerCallback(Produce); //вызывает функцию производства по истечению таймера
-        Timer timer = new Timer(tm,sec,0,30*1000); //ждёт 30 секунд
-    }
-
     public Player Owner
     {
         get{return owner;}
@@ -98,9 +91,9 @@ public class Factory : Building
 {
        public Factory(Resource res, string name, Player? player)
     {
+        this.Level = 1;
         this.Name = name;
         this.ProduceQ = res.Factor;
         this.ProduceType = res;
-        player.AddBuilding(this);
     }
 }

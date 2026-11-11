@@ -5,7 +5,7 @@ namespace RSM;
 
 public static class Gameplay
 {
-    const string version = "0.1 build 111101";
+    const string version = "0.1 build 121101";
     public static bool ProgramIsRunning = false;
     public static Thread producingThread = new Thread(new ParameterizedThreadStart(threads.calculateProduce));
     static Gameplay(){
@@ -37,7 +37,9 @@ public static class Gameplay
 
     public static void Start()
     {
-        //Console.Clear();
+        #if !DEBUG
+        Console.Clear();
+        #endif
         while(ProgramIsRunning == true){
         Console.WriteLine("Resource System Manager - console edition\n\t\t{0}",version);
         Player? player = null;
@@ -58,7 +60,9 @@ public static class Gameplay
     public static void Update(Player? player)
     {
         Thread.Sleep(100);
-        //Console.Clear();
+        #if !DEBUG
+        Console.Clear();
+        #endif
         while (ProgramIsRunning == true)
         {
             Console.WriteLine("\tEnter a command >>");
@@ -76,10 +80,12 @@ public static class Gameplay
                 case "3":
                 bool InfoIsOpen = true;
                 while(InfoIsOpen){
-                    //Console.Clear();
+                    #if !DEBUG
+                    Console.Clear();
+                    #endif
                     GameMethods.Info(player);
 
-                    Thread.Sleep(100);
+                    Thread.Sleep(500);
                         if (Console.KeyAvailable)
                         {
                             var key = Console.ReadKey(true);
@@ -92,15 +98,21 @@ public static class Gameplay
                 }
                     break;
                 case "4":
-                //Console.Clear();
+                #if !DEBUG
+                Console.Clear();
+                #endif
                     //GameMethods.Sell(player);
                 break;
                 case "5":
-                //Console.Clear();
+                #if !DEBUG
+                Console.Clear();
+                #endif
                 //GameMethods.Save(player);
                 break;
                 case "6":
+                #if !DEBUG
                 //Console.Clear();
+                #endif
                 Start();
                 break;
                 default:

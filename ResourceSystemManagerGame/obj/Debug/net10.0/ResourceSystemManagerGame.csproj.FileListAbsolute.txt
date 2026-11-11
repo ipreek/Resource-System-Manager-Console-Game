@@ -12,3 +12,4 @@ C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemMa
 C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\obj\Debug\net10.0\ResourceSystemManagerGame.pdb
 C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\obj\Debug\net10.0\ResourceSystemManagerGame.genruntimeconfig.cache
 C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\obj\Debug\net10.0\ref\ResourceSystemManagerGame.dll
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\obj\Debug\net10.0\ResourceSystemManagerGame.sourcelink.json
