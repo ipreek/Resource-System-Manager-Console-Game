@@ -1,0 +1,14 @@
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\bin\Debug\net10.0\ResourceSystemManagerGame.exe
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\bin\Debug\net10.0\ResourceSystemManagerGame.deps.json
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\bin\Debug\net10.0\ResourceSystemManagerGame.runtimeconfig.json
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\bin\Debug\net10.0\ResourceSystemManagerGame.dll
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\bin\Debug\net10.0\ResourceSystemManagerGame.pdb
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\obj\Debug\net10.0\ResourceSystemManagerGame.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\obj\Debug\net10.0\ResourceSystemManagerGame.AssemblyInfoInputs.cache
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\obj\Debug\net10.0\ResourceSystemManagerGame.AssemblyInfo.cs
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\obj\Debug\net10.0\ResourceSystemManagerGame.csproj.CoreCompileInputs.cache
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\obj\Debug\net10.0\ResourceSystemManagerGame.dll
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\obj\Debug\net10.0\refint\ResourceSystemManagerGame.dll
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\obj\Debug\net10.0\ResourceSystemManagerGame.pdb
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\obj\Debug\net10.0\ResourceSystemManagerGame.genruntimeconfig.cache
+C:\Users\Timio\Documents\Resource System Manager Game - console\ResourceSystemManagerGame\obj\Debug\net10.0\ref\ResourceSystemManagerGame.dll
