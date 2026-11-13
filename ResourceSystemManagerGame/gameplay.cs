@@ -5,9 +5,9 @@ namespace RSM;
 
 public static class Gameplay
 {
-    const string version = "0.1 build 121101";
+    const string version = "0.1 build 121102";
     public static bool ProgramIsRunning = false;
-    public static Thread producingThread = new Thread(new ParameterizedThreadStart(threads.calculateProduce));
+    public static Thread producingThread = new Thread(new ParameterizedThreadStart(threads.ProducingThread));
     static Gameplay(){
         producingThread.Name = "ProducingThread";
     }
@@ -114,6 +114,9 @@ public static class Gameplay
                 //Console.Clear();
                 #endif
                 Start();
+                break;
+                case "MONEY":
+                player.AddMoney(1000000000);
                 break;
                 default:
                     Console.WriteLine("Wrong command! Try again.");

@@ -147,6 +147,7 @@ public class Player : Entity
         this.Level = 1;
         this.Expirience = 0;
     }
+    
     public Player(string name)
     {
         this.Level=1;

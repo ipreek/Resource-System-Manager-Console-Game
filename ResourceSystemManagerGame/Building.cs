@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 #nullable disable warnings
 namespace RSM;
 
@@ -11,6 +12,9 @@ public class Building : Entity
     private float produceQ;
     private Resource produceType;
     private Player owner;
+    protected int lastedSeconds = 0;
+    const int neededSeconds = 30;
+
 
     public float ProduceQ
     {
@@ -34,6 +38,15 @@ public class Building : Entity
         return xpCap(this.Level);
     }
 
+    public void ProduceCooldown(Player player)
+    {
+        this.lastedSeconds++;
+        if(lastedSeconds >= neededSeconds)
+        {
+            this.Produce(player);
+            this.lastedSeconds = 0;
+        }
+    }
     //используется для расчета трат(вызывается только если траты есть)
     public bool CalculateSpend(Player player, Resource resType, int ammount, out int ammountSpend, out float moneySpend, out Resource returnType)
             {
@@ -76,12 +89,13 @@ public class Building : Entity
         int buildingLevel = this.Level;
         Resource resType = this.ProduceType;
         float produceQ = resType.Factor;
+       
 
+        Console.WriteLine("Factory producing");
 
         int ammount = (int)((produceQ*(playerLevel+(buildingLevel*spendMultiply)))*ammountMultiply);
 
         CompleteSpend(player, resType, ammount);
-        
     }
     }
 

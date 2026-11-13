@@ -1,0 +1,19 @@
+# Build results
+bin/
+obj/
+
+# Visual Studio / VS Code
+.vs/
+*.user
+*.suo
+
+# Rider
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Логи и временные файлы
+*.log
+*.tmp

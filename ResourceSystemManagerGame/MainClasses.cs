@@ -57,7 +57,8 @@ public abstract class Entity
             {
                 this.Expirience -= CurrentCap;
                 this.Level++;
-                Console.WriteLine("You reached {0} level!", this.Level);
+                if (this is Player){
+                Console.WriteLine("You reached {0} level!", this.Level);}
                 CurrentCap = xpCap(this.Level);
             }
         }
@@ -72,27 +73,32 @@ public class Resource
     private float price;
     private bool isProducable;
     private Resource resourceProducedFrom;
+    private string buildName;
+    private static readonly List<Resource> _resourceList = new List<Resource>();
 
-    public Resource(string Name, float Factor, float Price, bool IsProducable, Resource? resType)
+    public Resource(string Name, float Factor, float Price, bool IsProducable, Resource? resType, string BuildName)
     {
-        name = Name; factor = Factor; price = Price; isProducable = IsProducable;
+        name = Name; factor = Factor; price = Price; isProducable = IsProducable; buildName = BuildName;
         if (resType != null)
         {
             resourceProducedFrom = resType;
         }
+        ResourceList.Add(this);
     }
+    public static List<Resource> ResourceList => _resourceList;
 
     public float Price{get{return price;}set{price=value;}}
     public float Factor{get{return factor;}}
     public string Name{get{return name;}}
     public bool IsProducable{get{return isProducable;}}
+    public string BuildName{get{return buildName;}}
     public Resource ResourceProducedFrom{get{return resourceProducedFrom;}}
 
-    public static readonly Resource Coal = new("Coal", 0.7F, 57.14F, false, null);
-    public static readonly Resource Ore = new("Ore", 1F, 40F, false, null);
-    public static readonly Resource Plant = new("Plant", 1.2F, 33.33F, false, null);
-    public static readonly Resource Metal = new("Metal", 0.8F, 75F, true, Ore);
-    public static readonly Resource Energy = new("Energy", 0.56F, 167.41F, true, Coal);
-    public static readonly Resource Food = new("Food", 0.9F, 104.16F, true, Plant);
+    public static readonly Resource Coal = new("Coal", 0.7F, 57.14F, false, null, "Coal Mineshaft");
+    public static readonly Resource Ore = new("Ore", 1F, 40F, false, null, "Ore Quary");
+    public static readonly Resource Plant = new("Plant", 1.2F, 33.33F, false, null, "Plant Farm");
+    public static readonly Resource Metal = new("Metal", 0.8F, 75F, true, Ore, "Metal Fabric");
+    public static readonly Resource Energy = new("Energy", 0.56F, 167.41F, true, Coal, "Energy Plant");
+    public static readonly Resource Food = new("Food", 0.9F, 104.16F, true, Plant, "Food Manufactory");
 
 }

@@ -10,11 +10,11 @@ namespace RSM;
 
 public static class GameMethods
 {
-    public const int ammountMultiply = 100;
+    public const int ammountMultiply = 10;
     public const float xpMultiply = 0.2F;
     public const float spendMultiply = 0.1F;
     public const int cashAmount = 1000;
-    public const int buildFactor = 15;
+    public const int buildFactor = 250;
 
     public static bool IsOnlySpaces(string str)
     { 
@@ -125,7 +125,7 @@ public static class GameMethods
             {
                 Console.Write($"{r.Key.Name}: {r.Value} ");
                 index1++;
-                if(index1%3 == 0)
+                if(index1%2 == 0)
                 {
                     Console.Write("\n");
                 }
@@ -134,7 +134,7 @@ public static class GameMethods
         
             foreach (var b in buildings)
             {
-                Console.Write($"Build {index1}: {b.Name}, lvl: {b.Level}({b.Expirience}/{b.GetXpCapForBuild()}), Resource type: {b.ProduceType.Name}");
+                Console.Write($"{index2+1}.{b.ProduceType.BuildName}: \"{b.Name}\", lvl: {b.Level}({b.Expirience}/{b.GetXpCapForBuild()}), Resource type: {b.ProduceType.Name}");
                 if (b.ProduceType.IsProducable == true)
                 {
                     Console.Write($", Consumed resource: {b.ProduceType.ResourceProducedFrom.Name}; ");
@@ -155,62 +155,57 @@ public static class GameMethods
     {
         Console.WriteLine("Enter name to your building:");
         string? name = Console.ReadLine();
+        if (name != ""){
         Factory factory = new Factory(res, name, player);
         player.RemoveMoney(Price);
-        player.AddBuilding(factory as Building);
+        player.AddBuilding(factory);
+        }
+        else
+        {
+            Factory factory = new Factory(res, "Default", player);
+            player.RemoveMoney(Price);
+            player.AddBuilding(factory);
+        }
     }
     
     public static void Build(Player player)
     {
-        Console.WriteLine("Enter number of building you wanna buy:");
-        Console.WriteLine($"1.Ore Mineshaft: {Resource.Ore.Price*buildFactor} 2.Coal Mineshaft: {Resource.Coal.Price*buildFactor} 3.Plant Farm: {Resource.Plant.Price*buildFactor}");
-        Console.WriteLine($"4.Metal Factory: {Resource.Metal.Price*buildFactor} 5.Power Plant: {Resource.Energy.Price*buildFactor} 6.Food Factory: {Resource.Food.Price*buildFactor}");
-        Console.WriteLine("7.Exit");
+        while(true){
+        int index = 0;
+        Console.WriteLine("Enter number of building you wanna buy:\n");
+        foreach(Resource res in Resource.ResourceList)
+        {
+            Console.Write($"{index+1}.{res.BuildName}: {res.Price*buildFactor} ");
+            index++;
+            if (index % 3 == 0)
+            {
+                Console.Write("\n");
+            }
+        }
+
+        int listLength = Resource.ResourceList.Count;
+        Console.WriteLine($"{index+1}.Exit");
 
         string? input = Console.ReadLine();
         float Price = 0;
         Resource? resType = null;
 
-        switch (input)
-        {
-            case "1":
-            resType = Resource.Ore;
-            Price = resType.Price*buildFactor;
-            BuyBuilding(player, resType, Price);
-            break;
-            case "2":
-            resType = Resource.Coal;
-            Price = resType.Price*buildFactor;
-            BuyBuilding(player, resType, Price);
-            break;
-            case "3":
-            resType = Resource.Plant;
-            Price = resType.Price*buildFactor;
-            BuyBuilding(player, resType, Price);
-            break;
-            case "4":
-            resType = Resource.Metal;
-            Price = resType.Price*buildFactor;
-            BuyBuilding(player, resType, Price);
-            break;
-            case "5":
-            resType = Resource.Energy;
-            Price = resType.Price*buildFactor;
-            BuyBuilding(player, resType, Price);
-            break;
-            case "6":
-            resType = Resource.Food;
-            Price = resType.Price*buildFactor;
-            BuyBuilding(player, resType, Price);
-            break;
-            case "7":
+            if(input == (index+1).ToString())
+            {
                 Gameplay.Update(player);
-            break;
-            default:
-            Gameplay.Update(player);
-            break;
-        }
-    }
+                break;
+            }else if(Int32.TryParse(input, out int integer) == true && integer > 0 && integer <(index+1))
+            {
+                resType = Resource.ResourceList[integer-1];
+                Price = resType.Price*buildFactor;
+                BuyBuilding(player, resType, Price);
+            }
+            else
+            {
+                Console.WriteLine("Wrong command! Try again.");
+            }
+
+        }}
     }
 
 

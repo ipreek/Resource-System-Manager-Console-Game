@@ -1,19 +1,37 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
-
+#nullable disable warnings
 namespace RSM;
 
 public static class threads
 {
-    const int timerSecs = 1;
-    public static void calculateProduce(Object? obj)
+
+    static readonly Object _lock = new object();
+    
+    public static void calculateProduce(Player player)
     {
-        while(Gameplay.ProgramIsRunning == true){
-        Player? player = (Player?)obj;
-        foreach(var b in player?.GetBuildings()){
-            TimerCallback tm = new TimerCallback(b.Produce); //вызывает функцию производства по истечению таймера
-            Timer timer = new Timer(tm,player,0,timerSecs*1000); //ждёт 30 секунд
-        }
+        if (player == null){return;}
+        foreach(var b in player?.GetBuildings().ToArray()){
+            b.ProduceCooldown(player);
         }
     }
+
+    public static void ProducingThread(Object? obj)
+    {
+        var sw = Stopwatch.StartNew();
+        double lastS = 0;
+        while(Gameplay.ProgramIsRunning == true)
+        {
+            Player? player = obj as Player;
+            double now = sw.Elapsed.TotalSeconds;
+            double dt = (now-lastS);
+            if(dt >= 1)
+            {
+                calculateProduce(player);
+                lastS = now;
+            }
+            Thread.Sleep(50);
+        }
+    }   
 }
