@@ -1,0 +1,161 @@
+using System;
+using System.Text;
+using System.Text.Json;
+using System.IO;
+using System.Runtime.InteropServices.JavaScript;
+
+
+namespace RSM;
+
+public class playerCopy
+{
+    public DateTime SaveDate {get;set;}
+    public string ID {get;set;}
+    public string Name {get;set;}
+    public int Level {get;set;}
+    public int XP {get;set;}
+    public float Money {get;set;}
+    public List<BuildCopy> BuildingList {get;set;}  = new List<BuildCopy>(); 
+    public IDictionary<string, int> ResourceList {get;set;} = new Dictionary<string, int>();
+}
+public class BuildCopy
+{
+    public string Name {get;set;}
+    public int Level {get;set;}
+    public int XP {get;set;}
+    public float TotalIncome {get;set;}
+    public float TotalSpend {get;set;}
+    public string Resource {get;set;}
+    public int lastedSecs {get;set;}
+}
+
+public class SaveAndLoad
+{
+
+    static object SaveLock = new object();
+    
+    public static void Save(Player p)
+    {
+        List<BuildCopy> buildListCopy = new List<BuildCopy>();
+        DateTime dt = DateTime.UtcNow;
+            playerCopy playerC = new playerCopy
+            {
+                ID = p.ID,
+                SaveDate = dt,
+                Name = p.Name,
+                Level = p.Level,
+                XP = p.Expirience,
+                Money = p.Money,
+                BuildingList = {},
+                ResourceList = {}
+            };
+
+            foreach(var b in p.GetBuildings())
+            {
+                BuildCopy bC = new BuildCopy{Name = b.Name, lastedSecs = b.LastedSeconds, Level = b.Level, XP = b.Expirience, Resource = b.ProduceType.Name, TotalIncome = b.TotalIncome, TotalSpend = b.TotalSpending};
+                playerC.BuildingList.Add(bC);
+            }
+
+            foreach(var res in p.GetStorage())
+            {
+                playerC.ResourceList.Add(res.Key.Name, res.Value);
+            }
+
+        string myDocs = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        string combinedPath = Path.Combine(myDocs, "RSM", "saves");
+
+        if (!Directory.Exists(combinedPath))
+        {
+            Directory.CreateDirectory(combinedPath);
+        }
+
+        string tempPath = Path.Combine(combinedPath, $"save_{p.ID}.tmp");
+        string filePath = Path.Combine(combinedPath, $"save_{p.ID}.json");
+
+        var options = new JsonSerializerOptions {WriteIndented = true};
+
+        string jsonText = JsonSerializer.Serialize<playerCopy>(playerC, options);
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+        int retries = 0;
+        lock(SaveLock){
+            while( retries <6 ){
+                try{
+                    File.WriteAllText(tempPath, jsonText);
+
+                    File.Move(tempPath, filePath);
+                    Console.WriteLine("Succesfully saved!");
+                    break;
+                }catch (IOException ex)
+                {
+                    retries++;
+                    Console.WriteLine(ex.Message);
+                    Thread.Sleep(60);
+                }
+            }
+        }
+        }
+
+        public static List<playerCopy> LoadAllFiles()
+    {
+        string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        string combinedPath = Path.Combine(directoryPath, "RSM", "saves");
+
+        if (!(Directory.Exists(combinedPath)))
+        {
+            Directory.CreateDirectory(combinedPath);
+        }
+
+        List<playerCopy> jsonStrings = new List<playerCopy>();
+
+        string[] fileNames = Directory.GetFiles(combinedPath); 
+
+        foreach(string s in fileNames)
+        {
+            string filePath = Path.Combine(combinedPath, s);
+            string getText = File.ReadAllText(filePath);
+            playerCopy playerC = null;
+            try{
+                playerC = JsonSerializer.Deserialize<playerCopy>(getText);
+            }catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            jsonStrings.Add(playerC);
+        }
+
+        return jsonStrings;
+    }
+
+    public static Player? Load(playerCopy pC)
+    {
+        Dictionary<Resource, int> resDict = new Dictionary<Resource, int>();
+        List<Resource> resList = Resource.ResourceList;
+        List<Building> buildings = new List<Building>();
+
+        foreach(var res in pC.ResourceList)
+        {
+            IEnumerable<Resource> findedRes = resList.Where<Resource>(r => r.Name == res.Key);
+            List<Resource> findedResList = findedRes.ToList<Resource>();
+            Resource neededRes = findedResList[0];
+            resDict.Add(neededRes, res.Value);
+        }
+        foreach(BuildCopy bC in pC.BuildingList)
+        {
+            IEnumerable<Resource> resType = Resource.ResourceList.Where<Resource>(r => r.Name == bC.Resource);
+            List<Resource> findedRes = resType.ToList<Resource>();
+            Resource res = findedRes[0];
+            Building newBuild = new Factory(res, bC.Name,null , bC.XP, bC.Level, bC.lastedSecs, bC.TotalIncome, bC.TotalSpend);
+            buildings.Add(newBuild);
+        }
+
+
+
+        Player player = new Player(pC.Name, pC.Level, pC.XP, resDict, buildings);
+        return player;
+    }
+    }
+

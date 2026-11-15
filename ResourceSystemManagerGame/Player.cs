@@ -108,9 +108,9 @@ public class Player : Entity
         b.Owner = null;
         }
     }
-    public IList<Building> GetBuildings()
+    public List<Building> GetBuildings()
     {
-        IList<Building> newList = new List<Building>{};
+        List<Building> newList = new List<Building>{};
         foreach(Building b in this.playerBuildings)
         {
             newList.Add(b);

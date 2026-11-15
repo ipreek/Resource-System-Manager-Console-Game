@@ -56,12 +56,17 @@ public static class GameMethods
             #endif
                 return NewGame();
             case "2":
-                //GameMethods.Load();
                 #if !DEBUG
                 Console.Clear();
                 #endif
-                Gameplay.Exit();
-                return null;
+                Player player1 = Load();
+                if(player1!=null){
+                return player1;
+                        }
+                        else
+                        {
+                            break;
+                        }
             case "3":
             #if !DEBUG
                 Console.Clear();
@@ -284,7 +289,7 @@ public static class GameMethods
     {
         while(true){
             Console.WriteLine("Choose what you want to sell");
-        Console.WriteLine("1.Building 2.Resources 3.Exit");
+            Console.WriteLine("1.Building 2.Resources 3.Exit");
             string? input1 = Console.ReadLine();
             bool ExitWhile = false;
             switch (input1)
@@ -306,6 +311,56 @@ public static class GameMethods
                     {
                         break;
                     }
+        }
+        
+    }
+
+    public static Player? Load()
+    {
+        #if !DEBUG
+        Console.Clear();
+        #endif
+        IList<playerCopy> loadList = SaveAndLoad.LoadAllFiles();
+
+        if (loadList.Count != 0)
+        {while(true){
+            Console.WriteLine("Choose file for loading:");
+            int index = 1;
+            foreach(playerCopy pC in loadList)
+            {
+                Console.WriteLine($"{index}.{pC.Name} ID: {pC.ID} - {pC.SaveDate}");
+                index++;
+            }
+            Console.WriteLine($"{index}.Exit");
+            string input = Console.ReadLine();
+
+            if(Int32.TryParse(input, out int inputInt) && inputInt >0 && inputInt < index+1)
+            {
+                if(inputInt == index)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        Player p = SaveAndLoad.Load(loadList[inputInt-1]);
+                        List<Building> bList = p.GetBuildings();
+                        for(int i =0; i<=bList.Count; i++)
+                        {
+                            bList[i].Owner = p;
+                        }
+                        return(SaveAndLoad.Load(loadList[inputInt]));
+                    }
+            }
+            else
+            {
+                Console.WriteLine("Wrong command! Try again");
+            }}
+        }
+        else
+        {
+            Console.WriteLine("Save files not found!:()");
+            Console.ReadLine();
+            return null;
         }
     }
     }

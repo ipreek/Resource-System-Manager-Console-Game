@@ -14,15 +14,38 @@ public static class Gameplay
 
     private static List<Player?> ListOfPlayers = new List<Player?>();
 
+    public static IList<Player> PlayerList{
+        get
+        {
+            foreach(Player p in ListOfPlayers)
+            {
+                PlayerList.Add(p);
+            }
+            return PlayerList;        
+        }
+    }
+
+    public static void AddPlayer(Player player)
+    {
+        ListOfPlayers.Add(player);
+    }
+
     public static bool GetId(out string? playerId)
     {
         playerId = "";
-        int Length = ListOfPlayers.Count;
-        Length = Length >0 ? Length : 1; 
-        Player? lastPlayer = null;
-        if (ListOfPlayers.Count >0){
-            lastPlayer = ListOfPlayers[Length-1];
+        
+        List<playerCopy> listOfPlayers = SaveAndLoad.LoadAllFiles();
+        List<string> ListOfIds = new List<string>();
+        foreach(playerCopy pC in listOfPlayers)
+        {
+            ListOfIds.Add(pC.ID);
         }
+
+        ListOfIds.Sort();
+        string? lastPlayer = null;
+
+        lastPlayer = ListOfIds[^1];
+        
 
         if (lastPlayer == null)
         {
@@ -30,7 +53,7 @@ public static class Gameplay
         }
         else
         {
-            playerId = lastPlayer.ID;
+            playerId = lastPlayer;
             return true;
         }
     }
@@ -52,6 +75,7 @@ public static class Gameplay
             Update(player);
         }catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 Console.WriteLine("Thread terminated!");
             }
         }
@@ -109,11 +133,15 @@ public static class Gameplay
                 #if !DEBUG
                 Console.Clear();
                 #endif
-                //GameMethods.Save(player);
+                try{
+                 SaveAndLoad.Save(player);}catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 break;
                 case "6":
                 #if !DEBUG
-                //Console.Clear();
+                Console.Clear();
                 #endif
                 Start();
                 break;

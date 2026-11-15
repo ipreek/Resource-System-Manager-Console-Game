@@ -16,11 +16,11 @@ public class Building : Entity
     const int neededSeconds = 30;
     private float totalSpending = 0;
     private float totalIncome = 0;
-    private float totalProfit = 0;
 
-    public float TotalSpending{get{return totalSpending;}}
-    public float TotalIncome{get{return totalIncome;}}
+    public float TotalSpending{get{return totalSpending;} set{totalSpending = value;}}
+    public float TotalIncome{get{return totalIncome;} set{totalIncome = value;}}
     public float TotalProfit{get{return this.TotalIncome-this.TotalSpending;}}
+    public int LastedSeconds {get{return this.lastedSeconds;}set{lastedSeconds = value;}}
 
 
     public float ProduceQ
@@ -119,5 +119,18 @@ public class Factory : Building
         this.Name = name;
         this.ProduceQ = res.Factor;
         this.ProduceType = res;
+    }
+
+    public Factory(Resource res, string name, Player? player, int xp, int level, int lastedSecs, float totInc, float totSpend)
+    {
+        this.Level = level;
+        this.Expirience = xp;
+        this.Name = name;
+        this.Owner = player;
+        this.ProduceType = res;
+        this.ProduceQ = res.Factor;
+        this.LastedSeconds = lastedSeconds;
+        this.TotalIncome = totInc;
+        this.TotalSpending = totSpend;
     }
 }
