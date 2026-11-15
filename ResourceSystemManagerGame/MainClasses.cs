@@ -76,7 +76,7 @@ public class Resource
     private string buildName;
     private static readonly List<Resource> _resourceList = new List<Resource>();
 
-    public Resource(string Name, float Factor, float Price, bool IsProducable, Resource? resType, string BuildName)
+    Resource(string Name, float Factor, float Price, bool IsProducable, Resource? resType, string BuildName)
     {
         name = Name; factor = Factor; price = Price; isProducable = IsProducable; buildName = BuildName;
         if (resType != null)
@@ -94,11 +94,11 @@ public class Resource
     public string BuildName{get{return buildName;}}
     public Resource ResourceProducedFrom{get{return resourceProducedFrom;}}
 
-    public static readonly Resource Coal = new("Coal", 0.7F, 57.14F, false, null, "Coal Mineshaft");
-    public static readonly Resource Ore = new("Ore", 1F, 40F, false, null, "Ore Quary");
-    public static readonly Resource Plant = new("Plant", 1.2F, 33.33F, false, null, "Plant Farm");
-    public static readonly Resource Metal = new("Metal", 0.8F, 75F, true, Ore, "Metal Fabric");
-    public static readonly Resource Energy = new("Energy", 0.56F, 167.41F, true, Coal, "Energy Plant");
-    public static readonly Resource Food = new("Food", 0.9F, 104.16F, true, Plant, "Food Manufactory");
+    public static Resource Coal = new("Coal", 0.7F, 57.14F, false, null, "Coal Mineshaft");
+    public static Resource Ore = new("Ore", 1F, 40F, false, null, "Ore Quary");
+    public static Resource Plant = new("Plant", 1.2F, 33.33F, false, null, "Plant Farm");
+    public static Resource Metal = new("Metal", 0.8F, 75F, true, Ore, "Metal Fabric");
+    public static Resource Energy = new("Energy", 0.56F, 167.41F, true, Coal, "Energy Plant");
+    public static Resource Food = new("Food", 0.9F, 104.16F, true, Plant, "Food Manufactory");
 
 }

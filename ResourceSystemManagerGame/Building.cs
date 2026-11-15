@@ -14,6 +14,13 @@ public class Building : Entity
     private Player owner;
     protected int lastedSeconds = 0;
     const int neededSeconds = 30;
+    private float totalSpending = 0;
+    private float totalIncome = 0;
+    private float totalProfit = 0;
+
+    public float TotalSpending{get{return totalSpending;}}
+    public float TotalIncome{get{return totalIncome;}}
+    public float TotalProfit{get{return this.TotalIncome-this.TotalSpending;}}
 
 
     public float ProduceQ
@@ -56,8 +63,10 @@ public class Building : Entity
                 moneySpend = ammount*(spendQ+1/playerLevel);
                 ammountSpend = 0;
                 returnType = null;
+                this.totalSpending += moneySpend;
+                this.totalIncome += ammount*resType.Price;
                 if (resType.IsProducable == true){
-                ammountSpend = (int)((spendQ*(1/(playerLevel+(buildingLevel*spendMultiply))))*ammountMultiply);
+                ammountSpend = (int)((1/(playerLevel)+(buildingLevel*spendMultiply))*ammountMultiply);
                 returnType = resType.ResourceProducedFrom;
                 return true;
                 }
@@ -70,6 +79,7 @@ public class Building : Entity
             player.RemoveMoney(moneySpend);
             this.LevelUp((int)(ammount*returnType.Factor*xpMultiply));
             player.AddResource(returnType, ammount);
+            
             if (SpendResource != null)
             {
                 player.RemoveResource((Resource)SpendResource, ammountSpend);

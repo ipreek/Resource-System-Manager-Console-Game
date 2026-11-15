@@ -10,10 +10,10 @@ namespace RSM;
 
 public static class GameMethods
 {
-    public const int ammountMultiply = 10;
-    public const float xpMultiply = 0.2F;
+    public const int ammountMultiply = 100;
+    public const float xpMultiply = 0.5F;
     public const float spendMultiply = 0.1F;
-    public const int cashAmount = 1000;
+    public const int cashAmount = 10000;
     public const int buildFactor = 250;
 
     public static bool IsOnlySpaces(string str)
@@ -114,8 +114,8 @@ public static class GameMethods
 
     public static void Info(Player player)
     {
-            Dictionary<Resource, int> storage = player.GetStorage();
-            List<Building> buildings = player.GetBuildings();
+            IDictionary<Resource, int> storage = player.GetStorage();
+            IEnumerable<Building> buildings = player.GetBuildings();
             int index1 = 0;
             int index2 = 0;
 
@@ -134,14 +134,10 @@ public static class GameMethods
         
             foreach (var b in buildings)
             {
-                Console.Write($"{index2+1}.{b.ProduceType.BuildName}: \"{b.Name}\", lvl: {b.Level}({b.Expirience}/{b.GetXpCapForBuild()}), Resource type: {b.ProduceType.Name}");
+                Console.WriteLine($"{index2+1}.{b.ProduceType.BuildName}: \"{b.Name}\", lvl: {b.Level}({b.Expirience}/{b.GetXpCapForBuild()}), Resource type: {b.ProduceType.Name}");
                 if (b.ProduceType.IsProducable == true)
                 {
                     Console.Write($", Consumed resource: {b.ProduceType.ResourceProducedFrom.Name}; ");
-            }
-            else
-            {
-                Console.Write("; ");
             }
                 index2++;
                 if(index2%5 == 0)
@@ -172,8 +168,10 @@ public static class GameMethods
     {
         while(true){
         int index = 0;
-        Console.WriteLine("Enter number of building you wanna buy:\n");
-        foreach(Resource res in Resource.ResourceList)
+        Console.WriteLine($"You have {player.Money} Money");
+        Console.WriteLine("Enter number of building you wanna buy:");
+        IEnumerable<Resource> resEnum = Resource.ResourceList;
+        foreach(Resource res in resEnum)
         {
             Console.Write($"{index+1}.{res.BuildName}: {res.Price*buildFactor} ");
             index++;
@@ -183,12 +181,12 @@ public static class GameMethods
             }
         }
 
-        int listLength = Resource.ResourceList.Count;
         Console.WriteLine($"{index+1}.Exit");
 
         string? input = Console.ReadLine();
         float Price = 0;
         Resource? resType = null;
+        IReadOnlyList<Resource> resList = Resource.ResourceList;
 
             if(input == (index+1).ToString())
             {
@@ -196,7 +194,7 @@ public static class GameMethods
                 break;
             }else if(Int32.TryParse(input, out int integer) == true && integer > 0 && integer <(index+1))
             {
-                resType = Resource.ResourceList[integer-1];
+                resType = resList[integer-1];
                 Price = resType.Price*buildFactor;
                 BuyBuilding(player, resType, Price);
             }
@@ -206,6 +204,110 @@ public static class GameMethods
             }
 
         }}
+
+    public static void SellResources(Player player)
+    {
+        Console.WriteLine("Succesfully sell ");
+        IDictionary<Resource, int> playerStorage = player.GetStorage();
+        foreach(var res in playerStorage)
+        {
+            player.RemoveResource(res.Key, res.Value);
+            player.AddMoney(res.Key.Price*res.Value);
+            Console.Write($"{res.Value} {res.Key.Name} for {res.Key.Price*res.Value}, ");
+        }
+        (int Left, int Top) CursorPos = Console.GetCursorPosition();
+        Console.SetCursorPosition(CursorPos.Left-2, CursorPos.Top);
+        Console.Write("!");
+        Console.WriteLine("Now you have {0}!", player.Money);
+    }
+
+    private static void SellChoosedBuilding(Player player, Building build)
+    {
+        float Price = build.ProduceType.Price*buildFactor*(build.Level*xpMultiply);
+        player.RemoveBuilding(build);
+        player.AddMoney(Price);
+        Console.WriteLine($"Succesfully sell {build.ProduceType.BuildName} \"{build.Name}\" for {Price}");
+        Console.WriteLine($"You now have {player.Money}");
+    }
+
+    public static void SellBuilding(Player player)
+    {
+        IEnumerable<Building> buildingList = player.GetBuildings();
+        int index = 1;
+        Console.WriteLine("Choose building you want to sell:");
+
+        foreach (Building b in buildingList)
+        {
+            Console.WriteLine($"{index}.{b.ProduceType.BuildName} \"{b.Name}\", LvL {b.Level}");
+            Console.WriteLine($"\tTotal income (expectable): {b.TotalIncome}. Total spendings: {b.TotalSpending}. Total profit: {b.TotalProfit}");
+            index++;
+        }
+        Console.WriteLine($"{index}.Exit");
+
+        string? input = Console.ReadLine();
+
+        bool parse = Int32.TryParse(input, out int inputInt);
+
+        if (parse == true)
+        {
+            if(inputInt == index)
+            {
+                Sell(player);
+            }else if(inputInt >0 && inputInt < index)
+            {
+                IList<Building> bList = player.GetBuildings();
+                Building b = bList[inputInt-1];
+                Console.WriteLine("Are you sure?");
+                Console.WriteLine("  1.Yes 2.No");
+                string input2 = Console.ReadLine();
+                switch (input2)
+                {
+                    case "1":
+                        SellChoosedBuilding(player, b);
+                    break;
+                    case "2":
+                        break;
+                    default:
+                        Console.WriteLine("Wrong Command! Try again.");
+                    break;
+                }
+            }
+        }
+        else
+        {
+            Console.WriteLine("Wrong Command! Try again!");
+        }
+
+    }
+
+    public static void Sell(Player player)
+    {
+        while(true){
+            Console.WriteLine("Choose what you want to sell");
+        Console.WriteLine("1.Building 2.Resources 3.Exit");
+            string? input1 = Console.ReadLine();
+            bool ExitWhile = false;
+            switch (input1)
+            {
+                case "1":
+                    SellBuilding(player);
+                break;
+                case "2":
+                    SellResources(player);
+                break;
+                case "3":
+                    ExitWhile = true;
+                break;
+                default:
+                    Console.WriteLine("Wrong Command! Try again.");
+                break;
+            }
+            if (ExitWhile == true)
+                    {
+                        break;
+                    }
+        }
+    }
     }
 
 

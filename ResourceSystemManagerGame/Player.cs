@@ -4,6 +4,7 @@ using System.Xml.XPath;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Data.SqlTypes;
 #nullable disable warnings
 namespace RSM;
 
@@ -17,11 +18,16 @@ public class Player : Entity
     private string id;
     const int defaultXp = 10;
 
-    private Dictionary<Resource, int> Storage = new Dictionary<Resource, int>()
+    private void StorageFill()
     {
-        {Resource.Coal, 0},{Resource.Energy,0},{Resource.Food,0},{Resource.Metal,0},{Resource.Ore,0},
-        {Resource.Plant,0}
-    };
+        foreach(Resource res in Resource.ResourceList)
+        {
+            this.Storage.Add(res,0);
+        }
+    }
+
+    private Dictionary<Resource, int> Storage = new Dictionary<Resource, int>()
+    {};
 
     public void AddResource(Resource res, int ammount)
     {
@@ -102,9 +108,9 @@ public class Player : Entity
         b.Owner = null;
         }
     }
-    public List<Building> GetBuildings()
+    public IList<Building> GetBuildings()
     {
-        List<Building> newList = new List<Building>{};
+        IList<Building> newList = new List<Building>{};
         foreach(Building b in this.playerBuildings)
         {
             newList.Add(b);
@@ -131,9 +137,9 @@ public class Player : Entity
         return xpCap(this.Level);
     }
 
-    public Dictionary<Resource, int> GetStorage()
+    public IDictionary<Resource, int> GetStorage()
     {
-        Dictionary<Resource, int> resDict = new Dictionary<Resource, int>();
+        IDictionary<Resource, int> resDict = new Dictionary<Resource, int>();
         foreach(var res in Storage)
         {
             resDict.Add(res.Key, res.Value);
@@ -146,6 +152,7 @@ public class Player : Entity
     {
         this.Level = 1;
         this.Expirience = 0;
+        this.StorageFill();
     }
     
     public Player(string name)
@@ -153,12 +160,14 @@ public class Player : Entity
         this.Level=1;
         this.Expirience = 0;
         this.Name = name;
+        this.StorageFill();
     }
     public Player(string name, int level, int xp, Dictionary<Resource, int> resDict, List<Building> buildList)
     {
         this.Level = level;
         this.Expirience = xp;
         this.Name = name;
+        this.StorageFill();
         foreach(var res in resDict)
         {
             this.AddResource(res.Key, res.Value);

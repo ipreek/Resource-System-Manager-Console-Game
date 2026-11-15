@@ -12,7 +12,8 @@ public static class threads
     public static void calculateProduce(Player player)
     {
         if (player == null){return;}
-        foreach(var b in player?.GetBuildings().ToArray()){
+        IEnumerable<Building> getBuildings = player?.GetBuildings();
+        foreach(var b in getBuildings){
             b.ProduceCooldown(player);
         }
     }

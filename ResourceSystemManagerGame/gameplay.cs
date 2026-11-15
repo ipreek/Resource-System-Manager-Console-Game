@@ -5,7 +5,7 @@ namespace RSM;
 
 public static class Gameplay
 {
-    const string version = "0.1 build 121102";
+    const string version = "0.1 build 151101";
     public static bool ProgramIsRunning = false;
     public static Thread producingThread = new Thread(new ParameterizedThreadStart(threads.ProducingThread));
     static Gameplay(){
@@ -74,7 +74,9 @@ public static class Gameplay
                     GameMethods.Build(player);
                 break;
                 case "2":
-                //Console.Clear();
+                #if !DEBUG
+                Console.Clear();
+                #endif
                     player?.Work();
                 break;
                 case "3":
@@ -101,7 +103,7 @@ public static class Gameplay
                 #if !DEBUG
                 Console.Clear();
                 #endif
-                    //GameMethods.Sell(player);
+                    GameMethods.Sell(player);
                 break;
                 case "5":
                 #if !DEBUG
