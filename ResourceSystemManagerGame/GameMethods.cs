@@ -223,6 +223,9 @@ public static class GameMethods
 
     public static void SellResources(Player player)
     {
+        #if !DEBUG
+        Console.Clear();
+        #endif
         Console.WriteLine("Succesfully sell ");
         IDictionary<Resource, int> playerStorage = player.GetStorage();
         foreach(var res in playerStorage)
@@ -305,6 +308,9 @@ public static class GameMethods
     public static void Sell(Player player)
     {
         while(true){
+            #if !DEBUG
+            Console.Clear();
+            #endif
             Console.WriteLine("Choose what you want to sell");
             Console.WriteLine("1.Building 2.Resources 3.Exit");
             string? input1 = Console.ReadLine();
@@ -377,7 +383,7 @@ public static class GameMethods
         }
         else
         {
-            Console.WriteLine("Save files not found!:()");
+            Console.WriteLine("Save files not found!:(");
             Console.ReadLine();
             return null;
         }
