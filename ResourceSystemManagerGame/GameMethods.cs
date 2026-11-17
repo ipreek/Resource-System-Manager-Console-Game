@@ -155,9 +155,6 @@ public static class GameMethods
                     Console.Write("\n");
                 }
             }
-            #if !DEBUG
-            Console.Clear();
-            #endif
         }
 
     public static void BuyBuilding(Player player,Resource res, float Price)

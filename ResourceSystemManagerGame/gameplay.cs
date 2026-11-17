@@ -5,7 +5,7 @@ namespace RSM;
 
 public static class Gameplay
 {
-    const string version = "1.0 build 171101";
+    const string version = "1.0 build 171102";
     public static bool ProgramIsRunning = false;
     public static Thread producingThread = new Thread(new ParameterizedThreadStart(threads.ProducingThread));
     static Gameplay(){
@@ -107,6 +107,9 @@ public static class Gameplay
                             if (key.Key == ConsoleKey.Enter)
                             {
                                 InfoIsOpen = false;
+                                #if !DEBUG
+                                Console.Clear();
+                                #endif
                                 break;
                             }
                         }
