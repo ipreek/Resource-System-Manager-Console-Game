@@ -59,6 +59,7 @@ public class SaveAndLoad
             foreach(var res in p.GetStorage())
             {
                 playerC.ResourceList.Add(res.Key.Name, res.Value);
+
             }
 
         string myDocs = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -138,23 +139,19 @@ public class SaveAndLoad
 
         foreach(var res in pC.ResourceList)
         {
-            IEnumerable<Resource> findedRes = resList.Where<Resource>(r => r.Name == res.Key);
-            List<Resource> findedResList = findedRes.ToList<Resource>();
-            Resource neededRes = findedResList[0];
+            List<Resource> findedRes = (resList.Where<Resource>(r => r.Name == res.Key)).ToList<Resource>();
+            Resource neededRes = findedRes[0];
             resDict.Add(neededRes, res.Value);
         }
         foreach(BuildCopy bC in pC.BuildingList)
         {
-            IEnumerable<Resource> resType = Resource.ResourceList.Where<Resource>(r => r.Name == bC.Resource);
-            List<Resource> findedRes = resType.ToList<Resource>();
-            Resource res = findedRes[0];
+            List<Resource> resType = (Resource.ResourceList.Where<Resource>(r => r.Name == bC.Resource)).ToList<Resource>();
+            Resource res = resType[0];
             Building newBuild = new Factory(res, bC.Name,null , bC.XP, bC.Level, bC.lastedSecs, bC.TotalIncome, bC.TotalSpend);
             buildings.Add(newBuild);
         }
 
-
-
-        Player player = new Player(pC.Name, pC.Level, pC.XP, resDict, buildings);
+        Player player = new Player(pC.Name, pC.Level, pC.XP, resDict, buildings, pC.ID);
         return player;
     }
     }

@@ -59,7 +59,12 @@ public static class GameMethods
                 #if !DEBUG
                 Console.Clear();
                 #endif
-                Player player1 = Load();
+                Player player1 = null;
+                try{
+                        player1 = Load();}catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
                 if(player1!=null){
                 return player1;
                         }
@@ -150,10 +155,16 @@ public static class GameMethods
                     Console.Write("\n");
                 }
             }
+            #if !DEBUG
+            Console.Clear();
+            #endif
         }
 
     public static void BuyBuilding(Player player,Resource res, float Price)
     {
+        #if !DEBUG
+        Console.Clear();
+        #endif
         Console.WriteLine("Enter name to your building:");
         string? name = Console.ReadLine();
         if (name != ""){
@@ -171,6 +182,9 @@ public static class GameMethods
     
     public static void Build(Player player)
     {
+        #if !DEBUG
+        Console.Clear();
+        #endif
         while(true){
         int index = 0;
         Console.WriteLine($"You have {player.Money} Money");
@@ -228,6 +242,9 @@ public static class GameMethods
 
     private static void SellChoosedBuilding(Player player, Building build)
     {
+        #if !DEBUG
+        Console.Clear();
+        #endif
         float Price = build.ProduceType.Price*buildFactor*(build.Level*xpMultiply);
         player.RemoveBuilding(build);
         player.AddMoney(Price);
@@ -237,6 +254,9 @@ public static class GameMethods
 
     public static void SellBuilding(Player player)
     {
+        #if !DEBUG
+        Console.Clear();
+        #endif
         IEnumerable<Building> buildingList = player.GetBuildings();
         int index = 1;
         Console.WriteLine("Choose building you want to sell:");
@@ -344,11 +364,13 @@ public static class GameMethods
                     {
                         Player p = SaveAndLoad.Load(loadList[inputInt-1]);
                         List<Building> bList = p.GetBuildings();
-                        for(int i =0; i<=bList.Count; i++)
+                        if(bList.Count != 0){
+                        for(int i =0; i<bList.Count; i++)
                         {
                             bList[i].Owner = p;
                         }
-                        return(SaveAndLoad.Load(loadList[inputInt]));
+                        }
+                        return(SaveAndLoad.Load(loadList[inputInt-1]));
                     }
             }
             else

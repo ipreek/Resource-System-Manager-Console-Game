@@ -6,6 +6,7 @@ namespace RSM;
 
 public static class threads
 {
+    public static bool ThreadIsRunning;
 
     static readonly Object _lock = new object();
     
@@ -22,7 +23,7 @@ public static class threads
     {
         var sw = Stopwatch.StartNew();
         double lastS = 0;
-        while(Gameplay.ProgramIsRunning == true)
+        while(ThreadIsRunning == true)
         {
             Player? player = obj as Player;
             double now = sw.Elapsed.TotalSeconds;
@@ -32,7 +33,7 @@ public static class threads
                 calculateProduce(player);
                 lastS = now;
             }
-            Thread.Sleep(50);
+            //Thread.Sleep(50);
         }
     }   
 }

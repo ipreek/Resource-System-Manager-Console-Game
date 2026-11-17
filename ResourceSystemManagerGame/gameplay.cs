@@ -5,29 +5,11 @@ namespace RSM;
 
 public static class Gameplay
 {
-    const string version = "0.1 build 151101";
+    const string version = "1.0 build 171101";
     public static bool ProgramIsRunning = false;
     public static Thread producingThread = new Thread(new ParameterizedThreadStart(threads.ProducingThread));
     static Gameplay(){
         producingThread.Name = "ProducingThread";
-    }
-
-    private static List<Player?> ListOfPlayers = new List<Player?>();
-
-    public static IList<Player> PlayerList{
-        get
-        {
-            foreach(Player p in ListOfPlayers)
-            {
-                PlayerList.Add(p);
-            }
-            return PlayerList;        
-        }
-    }
-
-    public static void AddPlayer(Player player)
-    {
-        ListOfPlayers.Add(player);
     }
 
     public static bool GetId(out string? playerId)
@@ -44,8 +26,13 @@ public static class Gameplay
         ListOfIds.Sort();
         string? lastPlayer = null;
 
+        if(ListOfIds.Count != 0){
+        try{
         lastPlayer = ListOfIds[^1];
-        
+        }catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }}
 
         if (lastPlayer == null)
         {
@@ -69,8 +56,10 @@ public static class Gameplay
         while(player == null && ProgramIsRunning == true){
             player = GameMethods.Menu();
         }
-        ListOfPlayers.Add(player);
+        if(player != null){
+        threads.ThreadIsRunning = true;
         try{
+            producingThread = new Thread(new ParameterizedThreadStart(threads.ProducingThread));
             producingThread.Start(player);
             Update(player);
         }catch(Exception ex)
@@ -78,7 +67,7 @@ public static class Gameplay
                 Console.WriteLine(ex.Message);
                 Console.WriteLine("Thread terminated!");
             }
-        }
+        }}
     }
 
     public static void Update(Player? player)
@@ -143,6 +132,9 @@ public static class Gameplay
                 #if !DEBUG
                 Console.Clear();
                 #endif
+                producingThread.Interrupt();
+                threads.ThreadIsRunning = false;
+                producingThread.Join();
                 Start();
                 break;
                 case "MONEY":
@@ -158,6 +150,8 @@ public static class Gameplay
     public static void Exit()
     {
         ProgramIsRunning = false;
+        producingThread.Interrupt();
+        threads.ThreadIsRunning = false;
         try{
         producingThread.Join();
         }catch(Exception ex)
