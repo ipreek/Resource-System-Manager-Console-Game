@@ -5,7 +5,7 @@ namespace RSM;
 
 public static class Gameplay
 {
-    const string version = "1.0 build 171103";
+    const string version = "1.1 build 171104";
     public static bool ProgramIsRunning = false;
     public static Thread producingThread = new Thread(new ParameterizedThreadStart(threads.ProducingThread));
     static Gameplay(){
