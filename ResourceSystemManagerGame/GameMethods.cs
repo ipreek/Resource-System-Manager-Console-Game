@@ -5,6 +5,8 @@ using System.Data.SqlTypes;
 using System.Linq.Expressions;
 using System.Security.AccessControl;
 using System.Threading;
+using System.Reflection;
+using System.Text.Json;
 
 namespace RSM;
 
@@ -77,7 +79,10 @@ public static class GameMethods
                             break;
                         }
             case "3":
-
+            #if !DEBUG
+            Console.Clear();
+            #endif
+            ChangeLang();
             break;
             case "4":
             #if !DEBUG
@@ -92,6 +97,48 @@ public static class GameMethods
         return null;
         }
         return null;
+    }
+
+    public static void ChangeLang()
+    {
+        Console.WriteLine(Loc.Dict["choose_lang"]);
+        int index = 1;
+        var ass = Assembly.GetExecutingAssembly();
+        string[] stream = ass.GetManifestResourceNames();
+        List<string> files = new();
+        foreach(string str in stream)
+        {
+            if(str.Contains("Locals")){
+            using Stream? fstr = ass.GetManifestResourceStream(str);
+            StreamReader sr = new StreamReader(fstr);
+            string str11 = sr.ReadToEnd();
+            Dictionary<string, string> jsonstr = JsonSerializer.Deserialize<Dictionary<string,string>>(str11);
+            Console.WriteLine(Loc.Dict["lang_list"], index, jsonstr["title"]);
+            files.Add(str);
+            index++;}
+        }
+        Console.WriteLine(Loc.Dict["exit_button"], index);
+        string input = Console.ReadLine();
+
+        if(Int32.TryParse(input, out int inputInt) == true)
+        {
+            if(inputInt == index)
+            {
+                return;
+            }
+            else
+            {
+                string fileName = stream[0];
+                fileName = fileName.Replace("ResourceSystemManagerGame.Locals.", "");
+                fileName = fileName.Replace(".json", "");
+                Loc.GetLoc(fileName);
+                return;
+            }
+        }
+        else
+        {
+            Console.WriteLine(Loc.Dict["wrong_command"]);
+        }
     }
 
     public static Player NewGame()

@@ -17,13 +17,14 @@ public class Loc
 
         if(stream == null)
         {
-            Console.WriteLine("Localisation error! File not found!");
+            Console.WriteLine(Loc.Dict["loc_error"]);
             return;
         }
         using StreamReader reader = new StreamReader(stream);
         string jsonText = reader.ReadToEnd();
 
         Dict = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonText) ?? new Dictionary<string, string>();
+        Console.WriteLine(Loc.Dict["loc_succ"]);
     }
 
 }

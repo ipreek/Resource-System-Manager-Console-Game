@@ -1,5 +1,5 @@
 {
-    "version": "1.1 build 181101",
+    "title": "English",
     "select_command": "Enter a command>>",
     "start_menu": "1.New game 2.Load game 3.Change language 4.Exit",
     "new_char_name": "Enter name of your character",
@@ -52,5 +52,9 @@
     "succ_save": "Succesfully saved!",
     "factory_work": "Factory producing",
     "earn_money": "You earned {0} money",
-    "gain_exp": "You gained {0} experience points"
+    "gain_exp": "You gained {0} experience points",
+    "choose_lang": "Choose language from this list:",
+    "lang_list": "{0}.{1}",
+    "loc_error": "Localisation error! File not found.",
+    "loc_succ": "Language succesfully changed to english!"
 }
