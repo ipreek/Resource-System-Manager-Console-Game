@@ -75,11 +75,12 @@ public class Resource
     private Resource resourceProducedFrom;
     private string buildName;
     private string genName;
+    private string id;
     private static readonly List<Resource> _resourceList = new List<Resource>();
 
-    Resource(string Name, float Factor, float Price, bool IsProducable, Resource? resType, string BuildName, string Gen_name)
+    Resource(string Name, float Factor, float Price, bool IsProducable, Resource? resType, string BuildName, string Gen_name, string ID)
     {
-        genName = Gen_name;
+        genName = Gen_name; id=ID;
         name = Name; factor = Factor; price = Price; isProducable = IsProducable; buildName = BuildName;
         if (resType != null)
         {
@@ -88,7 +89,7 @@ public class Resource
         ResourceList.Add(this);
     }
     public static List<Resource> ResourceList => _resourceList;
-
+    public string ID{get{return id;}}
     public float Price{get{return price;}set{price=value;}}
     public float Factor{get{return factor;}}
     public string Name{get{return name;}}
@@ -98,11 +99,11 @@ public class Resource
     public Resource ResourceProducedFrom{get{return resourceProducedFrom;}}
 
     public static void ResCreate(){
-    Resource Coal = new(Loc.Dict["res_Coal"], 0.7F, 57.14F, false, null, Loc.Dict["build_Coal"], Loc.Dict["gen_Coal"]);
-    Resource Ore = new(Loc.Dict["res_Ore"], 1F, 40F, false, null, Loc.Dict["build_Ore"], Loc.Dict["gen_Ore"]);
-    Resource Plant = new(Loc.Dict["res_Plant"], 1.2F, 33.33F, false, null, Loc.Dict["build_Plant"], Loc.Dict["gen_Plant"]);
-    Resource Metal = new(Loc.Dict["res_Metal"], 0.8F, 75F, true, Ore, Loc.Dict["build_Metal"], Loc.Dict["gen_Metal"]);
-    Resource Energy = new(Loc.Dict["res_Energy"], 0.56F, 167.41F, true, Coal, Loc.Dict["build_Energy"], Loc.Dict["gen_Energy"]);
-    Resource Food = new(Loc.Dict["res_Food"], 0.9F, 104.16F, true, Plant, Loc.Dict["build_Food"], Loc.Dict["gen_Food"]);
+    Resource Coal = new(Loc.Dict["res_Coal"], 0.7F, 57.14F, false, null, Loc.Dict["build_Coal"], Loc.Dict["gen_Coal"], "coal");
+    Resource Ore = new(Loc.Dict["res_Ore"], 1F, 40F, false, null, Loc.Dict["build_Ore"], Loc.Dict["gen_Ore"], "ore");
+    Resource Plant = new(Loc.Dict["res_Plant"], 1.2F, 33.33F, false, null, Loc.Dict["build_Plant"], Loc.Dict["gen_Plant"], "plant");
+    Resource Metal = new(Loc.Dict["res_Metal"], 0.8F, 75F, true, Ore, Loc.Dict["build_Metal"], Loc.Dict["gen_Metal"], "metal");
+    Resource Energy = new(Loc.Dict["res_Energy"], 0.56F, 167.41F, true, Coal, Loc.Dict["build_Energy"], Loc.Dict["gen_Energy"], "energy");
+    Resource Food = new(Loc.Dict["res_Food"], 0.9F, 104.16F, true, Plant, Loc.Dict["build_Food"], Loc.Dict["gen_Food"], "food");
     }
 }

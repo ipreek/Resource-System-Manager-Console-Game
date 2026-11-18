@@ -52,13 +52,13 @@ public class SaveAndLoad
 
             foreach(var b in p.GetBuildings())
             {
-                BuildCopy bC = new BuildCopy{Name = b.Name, lastedSecs = b.LastedSeconds, Level = b.Level, XP = b.Expirience, Resource = b.ProduceType.Name, TotalIncome = b.TotalIncome, TotalSpend = b.TotalSpending};
+                BuildCopy bC = new BuildCopy{Name = b.Name, lastedSecs = b.LastedSeconds, Level = b.Level, XP = b.Expirience, Resource = b.ProduceType.ID, TotalIncome = b.TotalIncome, TotalSpend = b.TotalSpending};
                 playerC.BuildingList.Add(bC);
             }
 
             foreach(var res in p.GetStorage())
             {
-                playerC.ResourceList.Add(res.Key.Name, res.Value);
+                playerC.ResourceList.Add(res.Key.ID, res.Value);
 
             }
 
@@ -139,13 +139,13 @@ public class SaveAndLoad
 
         foreach(var res in pC.ResourceList)
         {
-            List<Resource> findedRes = (resList.Where<Resource>(r => r.Name == res.Key)).ToList<Resource>();
+            List<Resource> findedRes = (resList.Where<Resource>(r => r.ID == res.Key)).ToList<Resource>();
             Resource neededRes = findedRes[0];
             resDict.Add(neededRes, res.Value);
         }
         foreach(BuildCopy bC in pC.BuildingList)
         {
-            List<Resource> resType = (Resource.ResourceList.Where<Resource>(r => r.Name == bC.Resource)).ToList<Resource>();
+            List<Resource> resType = (Resource.ResourceList.Where<Resource>(r => r.ID == bC.Resource)).ToList<Resource>();
             Resource res = resType[0];
             Building newBuild = new Factory(res, bC.Name,null , bC.XP, bC.Level, bC.lastedSecs, bC.TotalIncome, bC.TotalSpend);
             buildings.Add(newBuild);

@@ -183,7 +183,7 @@ public static class GameMethods
             int index1 = 0;
             int index2 = 0;
 
-            Console.WriteLine(Loc.Dict["info_title"], player.Name, player.ID, player.Level, player.Expirience, player.GetXpCapForPlayer, player.Money);
+            Console.WriteLine(Loc.Dict["info_title"], player.Name, player.ID, player.Level, player.Expirience, player.GetXpCapForPlayer(), player.Money);
             Console.WriteLine(Loc.Dict["msg_storage"]);
             foreach(var r in storage)
             {
