@@ -127,8 +127,8 @@ public class Player : Entity
         int Xp = defaultXp;
         this.LevelUp(Xp);
         this.AddMoney(Payment);
-        Console.WriteLine("You earned {0} money!", Payment);
-        Console.WriteLine("You gained {0} experience point!", Xp);
+        Console.WriteLine(Loc.Dict["earn_money"], Payment);
+        Console.WriteLine(Loc.Dict["gain_exp"], Xp);
         GameMethods.Waiting(this);
     }
 

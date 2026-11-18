@@ -5,7 +5,6 @@ namespace RSM;
 
 public static class Gameplay
 {
-    const string version = "1.1 build 171104";
     public static bool ProgramIsRunning = false;
     public static Thread producingThread = new Thread(new ParameterizedThreadStart(threads.ProducingThread));
     static Gameplay(){
@@ -51,7 +50,7 @@ public static class Gameplay
         Console.Clear();
         #endif
         while(ProgramIsRunning == true){
-        Console.WriteLine("Resource System Manager - console edition\n\t\t{0}",version);
+        Console.WriteLine("Resource System Manager - console edition\n\t\t{0}", Loc.Dict["version"]);
         Player? player = null;
         while(player == null && ProgramIsRunning == true){
             player = GameMethods.Menu();
@@ -78,8 +77,8 @@ public static class Gameplay
         #endif
         while (ProgramIsRunning == true)
         {
-            Console.WriteLine("\tEnter a command >>");
-            Console.WriteLine("1.Build 2.Work 3.Info\n4.Sell 5.Save 6.Menu ");
+            Console.WriteLine(Loc.Dict["select_command"]);
+            Console.WriteLine(Loc.Dict["gameplay_menu"]);
             string value = Console.ReadLine();
             switch (value)
             {

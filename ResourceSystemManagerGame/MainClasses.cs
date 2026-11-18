@@ -26,7 +26,7 @@ public abstract class Entity
             }
             else
             {
-                throw new Exception("Wrong entity name! Name was empty or contains only spaces.");
+                throw new Exception(Loc.Dict["empty_name"]);
             }
         }
     }
@@ -58,7 +58,7 @@ public abstract class Entity
                 this.Expirience -= CurrentCap;
                 this.Level++;
                 if (this is Player){
-                Console.WriteLine("You reached {0} level!", this.Level);}
+                Console.WriteLine(Loc.Dict["level_reach"], this.Level);}
                 CurrentCap = xpCap(this.Level);
             }
         }
@@ -74,10 +74,12 @@ public class Resource
     private bool isProducable;
     private Resource resourceProducedFrom;
     private string buildName;
+    private string genName;
     private static readonly List<Resource> _resourceList = new List<Resource>();
 
-    Resource(string Name, float Factor, float Price, bool IsProducable, Resource? resType, string BuildName)
+    Resource(string Name, float Factor, float Price, bool IsProducable, Resource? resType, string BuildName, string Gen_name)
     {
+        genName = Gen_name;
         name = Name; factor = Factor; price = Price; isProducable = IsProducable; buildName = BuildName;
         if (resType != null)
         {
@@ -92,13 +94,15 @@ public class Resource
     public string Name{get{return name;}}
     public bool IsProducable{get{return isProducable;}}
     public string BuildName{get{return buildName;}}
+    public string GenName{get{return genName;}}
     public Resource ResourceProducedFrom{get{return resourceProducedFrom;}}
 
-    public static Resource Coal = new("Coal", 0.7F, 57.14F, false, null, "Coal Mineshaft");
-    public static Resource Ore = new("Ore", 1F, 40F, false, null, "Ore Quary");
-    public static Resource Plant = new("Plant", 1.2F, 33.33F, false, null, "Plant Farm");
-    public static Resource Metal = new("Metal", 0.8F, 75F, true, Ore, "Metal Fabric");
-    public static Resource Energy = new("Energy", 0.56F, 167.41F, true, Coal, "Energy Plant");
-    public static Resource Food = new("Food", 0.9F, 104.16F, true, Plant, "Food Manufactory");
-
+    public static void ResCreate(){
+    Resource Coal = new(Loc.Dict["res_Coal"], 0.7F, 57.14F, false, null, Loc.Dict["build_Coal"], Loc.Dict["gen_Coal"]);
+    Resource Ore = new(Loc.Dict["res_Ore"], 1F, 40F, false, null, Loc.Dict["build_Ore"], Loc.Dict["gen_Ore"]);
+    Resource Plant = new(Loc.Dict["res_Plant"], 1.2F, 33.33F, false, null, Loc.Dict["build_Plant"], Loc.Dict["gen_Plant"]);
+    Resource Metal = new(Loc.Dict["res_Metal"], 0.8F, 75F, true, Ore, Loc.Dict["build_Metal"], Loc.Dict["gen_Metal"]);
+    Resource Energy = new(Loc.Dict["res_Energy"], 0.56F, 167.41F, true, Coal, Loc.Dict["build_Energy"], Loc.Dict["gen_Energy"]);
+    Resource Food = new(Loc.Dict["res_Food"], 0.9F, 104.16F, true, Plant, Loc.Dict["build_Food"], Loc.Dict["gen_Food"]);
+    }
 }

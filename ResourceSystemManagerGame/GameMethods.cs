@@ -44,8 +44,8 @@ public static class GameMethods
     public static Player? Menu()
     {
         while(Gameplay.ProgramIsRunning == true){
-        Console.WriteLine("Enter a command >>");
-        Console.WriteLine("1.New game 2.Load game 3.Exit");
+        Console.WriteLine(Loc.Dict["select_command"]);
+        Console.WriteLine(Loc.Dict["start_menu"]);
         string? line = Console.ReadLine();
         if (line != null){
         switch (line)
@@ -54,11 +54,15 @@ public static class GameMethods
             #if !DEBUG
             Console.Clear();
             #endif
+            Resource.ResourceList.Clear();
+                Resource.ResCreate();
                 return NewGame();
             case "2":
                 #if !DEBUG
                 Console.Clear();
                 #endif
+                Resource.ResourceList.Clear();
+                Resource.ResCreate();
                 Player player1 = null;
                 try{
                         player1 = Load();}catch (Exception ex)
@@ -73,6 +77,9 @@ public static class GameMethods
                             break;
                         }
             case "3":
+
+            break;
+            case "4":
             #if !DEBUG
                 Console.Clear();
                 #endif
@@ -90,7 +97,7 @@ public static class GameMethods
     public static Player NewGame()
     {
         while(true){
-        Console.WriteLine("Enter name of your character: >>");
+        Console.WriteLine(Loc.Dict["new_char_name"]);
         Player player = new Player();
         string? lastId = Gameplay.GetId(out lastId) ? lastId : null;
         string Id;
@@ -129,8 +136,8 @@ public static class GameMethods
             int index1 = 0;
             int index2 = 0;
 
-            Console.WriteLine($"Player: {player.Name} ID: {player.ID} Level: {player.Level}({player.Expirience}/{player.GetXpCapForPlayer()}) Money:{player.Money}");
-            Console.WriteLine($"Storage:");
+            Console.WriteLine(Loc.Dict["info_title"], player.Name, player.ID, player.Level, player.Expirience, player.GetXpCapForPlayer, player.Money);
+            Console.WriteLine(Loc.Dict["msg_storage"]);
             foreach(var r in storage)
             {
                 Console.Write($"{r.Key.Name}: {r.Value} ");
@@ -140,14 +147,14 @@ public static class GameMethods
                     Console.Write("\n");
                 }
             }
-            Console.WriteLine("List of buildings:");
+            Console.WriteLine(Loc.Dict["building_list"]);
         
             foreach (var b in buildings)
             {
-                Console.WriteLine($"{index2+1}.{b.ProduceType.BuildName}: \"{b.Name}\", lvl: {b.Level}({b.Expirience}/{b.GetXpCapForBuild()}), Resource type: {b.ProduceType.Name}");
+                Console.WriteLine(Loc.Dict["build_in_list"], index2+1, b.ProduceType.BuildName, b.Name, b.Level, b.Expirience, b.GetXpCapForBuild(), b.ProduceType.Name);
                 if (b.ProduceType.IsProducable == true)
                 {
-                    Console.Write($", Consumed resource: {b.ProduceType.ResourceProducedFrom.Name}; ");
+                    Console.Write(Loc.Dict["consumed_res"], b.ProduceType.ResourceProducedFrom.Name);
             }
                 index2++;
                 if(index2%5 == 0)
@@ -162,7 +169,7 @@ public static class GameMethods
         #if !DEBUG
         Console.Clear();
         #endif
-        Console.WriteLine("Enter name to your building:");
+        Console.WriteLine(Loc.Dict["build_new_name"]);
         string? name = Console.ReadLine();
         if (name != ""){
         Factory factory = new Factory(res, name, player);
@@ -184,12 +191,12 @@ public static class GameMethods
         #endif
         while(true){
         int index = 0;
-        Console.WriteLine($"You have {player.Money} Money");
-        Console.WriteLine("Enter number of building you wanna buy:");
+        Console.WriteLine(Loc.Dict["money_ammount"], player.Money);
+        Console.WriteLine(Loc.Dict["select_build"]);
         IEnumerable<Resource> resEnum = Resource.ResourceList;
         foreach(Resource res in resEnum)
         {
-            Console.Write($"{index+1}.{res.BuildName}: {res.Price*buildFactor} ");
+            Console.Write(Loc.Dict["build_in_buy_list"], index+1, res.BuildName, res.Price*buildFactor);
             index++;
             if (index % 3 == 0)
             {
@@ -197,7 +204,7 @@ public static class GameMethods
             }
         }
 
-        Console.WriteLine($"{index+1}.Exit");
+        Console.WriteLine(Loc.Dict["exit_button"], index+1);
 
         string? input = Console.ReadLine();
         float Price = 0;
@@ -216,7 +223,7 @@ public static class GameMethods
             }
             else
             {
-                Console.WriteLine("Wrong command! Try again.");
+                Console.WriteLine(Loc.Dict["wrong_command"]);
             }
 
         }}
@@ -232,12 +239,12 @@ public static class GameMethods
         {
             player.RemoveResource(res.Key, res.Value);
             player.AddMoney(res.Key.Price*res.Value);
-            Console.Write($"{res.Value} {res.Key.Name} for {res.Key.Price*res.Value}, ");
+            Console.Write(Loc.Dict["sell_res"], res.Value, res.Key.GenName, res.Key.Price*res.Value);
         }
         (int Left, int Top) CursorPos = Console.GetCursorPosition();
         Console.SetCursorPosition(CursorPos.Left-2, CursorPos.Top);
         Console.Write("!");
-        Console.WriteLine("Now you have {0}!", player.Money);
+        Console.WriteLine(Loc.Dict["money_sell_count"], player.Money);
     }
 
     private static void SellChoosedBuilding(Player player, Building build)
@@ -248,8 +255,8 @@ public static class GameMethods
         float Price = build.ProduceType.Price*buildFactor*(build.Level*xpMultiply);
         player.RemoveBuilding(build);
         player.AddMoney(Price);
-        Console.WriteLine($"Succesfully sell {build.ProduceType.BuildName} \"{build.Name}\" for {Price}");
-        Console.WriteLine($"You now have {player.Money}");
+        Console.WriteLine(Loc.Dict["sell_build"],build.ProduceType.BuildName, build.Name, Price);
+        Console.WriteLine(Loc.Dict["money_sell_count"], player.Money);
     }
 
     public static void SellBuilding(Player player)
@@ -259,15 +266,15 @@ public static class GameMethods
         #endif
         IEnumerable<Building> buildingList = player.GetBuildings();
         int index = 1;
-        Console.WriteLine("Choose building you want to sell:");
+        Console.WriteLine(Loc.Dict["select_build_sell"]);
 
         foreach (Building b in buildingList)
         {
-            Console.WriteLine($"{index}.{b.ProduceType.BuildName} \"{b.Name}\", LvL {b.Level}");
-            Console.WriteLine($"\tTotal income (expectable): {b.TotalIncome}. Total spendings: {b.TotalSpending}. Total profit: {b.TotalProfit}");
+            Console.WriteLine(Loc.Dict["build_in_sell_listt"],index, b.ProduceType.BuildName, b.Name, b.Level);
+            Console.WriteLine(Loc.Dict["total_profit"], b.TotalIncome, b.TotalSpending, b.TotalProfit);
             index++;
         }
-        Console.WriteLine($"{index}.Exit");
+        Console.WriteLine(Loc.Dict["exit_button"], index);
 
         string? input = Console.ReadLine();
 
@@ -282,8 +289,8 @@ public static class GameMethods
             {
                 IList<Building> bList = player.GetBuildings();
                 Building b = bList[inputInt-1];
-                Console.WriteLine("Are you sure?");
-                Console.WriteLine("  1.Yes 2.No");
+                Console.WriteLine(Loc.Dict["sure_qu"]);
+                Console.WriteLine(Loc.Dict["yes_no"]);
                 string input2 = Console.ReadLine();
                 switch (input2)
                 {
@@ -293,14 +300,14 @@ public static class GameMethods
                     case "2":
                         break;
                     default:
-                        Console.WriteLine("Wrong Command! Try again.");
+                        Console.WriteLine(Loc.Dict["wrong_command"]);
                     break;
                 }
             }
         }
         else
         {
-            Console.WriteLine("Wrong Command! Try again!");
+            Console.WriteLine(Loc.Dict["wrong_command"]);
         }
 
     }
@@ -311,8 +318,8 @@ public static class GameMethods
             #if !DEBUG
             Console.Clear();
             #endif
-            Console.WriteLine("Choose what you want to sell");
-            Console.WriteLine("1.Building 2.Resources 3.Exit");
+            Console.WriteLine(Loc.Dict["choose_sell_item"]);
+            Console.WriteLine(Loc.Dict["list_of_items_for_sell"]);
             string? input1 = Console.ReadLine();
             bool ExitWhile = false;
             switch (input1)
@@ -327,7 +334,7 @@ public static class GameMethods
                     ExitWhile = true;
                 break;
                 default:
-                    Console.WriteLine("Wrong Command! Try again.");
+                    Console.WriteLine(Loc.Dict["wrong_command"]);
                 break;
             }
             if (ExitWhile == true)
@@ -347,14 +354,14 @@ public static class GameMethods
 
         if (loadList.Count != 0)
         {while(true){
-            Console.WriteLine("Choose file for loading:");
+            Console.WriteLine(Loc.Dict["choose_load"]);
             int index = 1;
             foreach(playerCopy pC in loadList)
             {
-                Console.WriteLine($"{index}.{pC.Name} ID: {pC.ID} - {pC.SaveDate}");
+                Console.WriteLine(Loc.Dict["player_in_load"],index, pC.Name, pC.ID, pC.SaveDate);
                 index++;
             }
-            Console.WriteLine($"{index}.Exit");
+            Console.WriteLine(Loc.Dict["exit_button"], index);
             string input = Console.ReadLine();
 
             if(Int32.TryParse(input, out int inputInt) && inputInt >0 && inputInt < index+1)
@@ -378,12 +385,12 @@ public static class GameMethods
             }
             else
             {
-                Console.WriteLine("Wrong command! Try again");
+                Console.WriteLine(Loc.Dict["wrong_command"]);
             }}
         }
         else
         {
-            Console.WriteLine("Save files not found!:(");
+            Console.WriteLine(Loc.Dict["save_not_foung"]);
             Console.ReadLine();
             return null;
         }

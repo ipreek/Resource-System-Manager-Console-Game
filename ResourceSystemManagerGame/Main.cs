@@ -9,6 +9,7 @@ namespace RSM
         {
             Gameplay.ProgramIsRunning = true;
             Console.WriteLine("Loading...");
+            Loc.GetLoc("eng");
             Gameplay.Start();
         }
     }

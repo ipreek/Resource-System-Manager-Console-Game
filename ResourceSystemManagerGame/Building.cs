@@ -100,8 +100,9 @@ public class Building : Entity
         Resource resType = this.ProduceType;
         float produceQ = resType.Factor;
        
-
-        Console.WriteLine("Factory producing");
+        #if DEBUG
+        Console.WriteLine(Loc.Dict["factory_work"]);
+        #endif
 
         int ammount = (int)((produceQ*(playerLevel+(buildingLevel*spendMultiply)))*ammountMultiply);
 

@@ -87,7 +87,7 @@ public class SaveAndLoad
                     File.WriteAllText(tempPath, jsonText);
 
                     File.Move(tempPath, filePath);
-                    Console.WriteLine("Succesfully saved!");
+                    Console.WriteLine(Loc.Dict["succ_save"]);
                     break;
                 }catch (IOException ex)
                 {
