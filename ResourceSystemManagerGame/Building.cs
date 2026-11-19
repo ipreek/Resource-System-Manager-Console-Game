@@ -9,6 +9,7 @@ public class Building : Entity
     const int ammountMultiply = GameMethods.ammountMultiply;
     const float xpMultiply = GameMethods.xpMultiply;
     const float spendMultiply = GameMethods.spendMultiply;
+    const int spendAmmount = 20;
     private float produceQ;
     private Resource produceType;
     private Player owner;
@@ -60,7 +61,7 @@ public class Building : Entity
                 int playerLevel = player.Level;
                 int buildingLevel = this.Level;
                 float spendQ = resType.Factor;
-                moneySpend = ammount*(spendQ+1/playerLevel);
+                moneySpend = ammount*(spendQ+1/playerLevel)*spendAmmount;
                 ammountSpend = 0;
                 returnType = null;
                 this.totalSpending += moneySpend;

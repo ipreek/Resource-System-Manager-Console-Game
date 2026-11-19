@@ -342,7 +342,7 @@ public static class GameMethods
         {
             if(inputInt == index)
             {
-                Sell(player);
+                return;
             }else if(inputInt >0 && inputInt < index)
             {
                 IList<Building> bList = player.GetBuildings();
