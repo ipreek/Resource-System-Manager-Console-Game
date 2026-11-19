@@ -7,6 +7,7 @@ using System.Security.AccessControl;
 using System.Threading;
 using System.Reflection;
 using System.Text.Json;
+using System.IO;
 
 namespace RSM;
 
@@ -222,12 +223,14 @@ public static class GameMethods
         Factory factory = new Factory(res, name, player);
         player.RemoveMoney(Price);
         player.AddBuilding(factory);
+        factory.TotalSpending += Price;
         }
         else
         {
             Factory factory = new Factory(res, "Default", player);
             player.RemoveMoney(Price);
             player.AddBuilding(factory);
+            factory.TotalSpending += Price;
         }
     }
     
@@ -288,9 +291,11 @@ public static class GameMethods
             player.AddMoney(res.Key.Price*res.Value);
             Console.Write(Loc.Dict["sell_res"], res.Value, res.Key.GenName, res.Key.Price*res.Value);
         }
+        #if !DEBUG
         (int Left, int Top) CursorPos = Console.GetCursorPosition();
         Console.SetCursorPosition(CursorPos.Left-2, CursorPos.Top);
         Console.Write("!");
+        #endif
         Console.WriteLine(Loc.Dict["money_sell_count"], player.Money);
     }
 
@@ -317,7 +322,7 @@ public static class GameMethods
 
         foreach (Building b in buildingList)
         {
-            Console.WriteLine(Loc.Dict["build_in_sell_listt"],index, b.ProduceType.BuildName, b.Name, b.Level);
+            Console.WriteLine(Loc.Dict["build_in_sell_list"],index, b.ProduceType.BuildName, b.Name, b.Level);
             Console.WriteLine(Loc.Dict["total_profit"], b.TotalIncome, b.TotalSpending, b.TotalProfit);
             index++;
         }
@@ -397,10 +402,11 @@ public static class GameMethods
         #if !DEBUG
         Console.Clear();
         #endif
+        
+        while(true){
         IList<playerCopy> loadList = SaveAndLoad.LoadAllFiles();
 
-        if (loadList.Count != 0)
-        {while(true){
+        if (loadList.Count != 0){
             Console.WriteLine(Loc.Dict["choose_load"]);
             int index = 1;
             foreach(playerCopy pC in loadList)
@@ -419,28 +425,57 @@ public static class GameMethods
                     }
                     else
                     {
-                        Player p = SaveAndLoad.Load(loadList[inputInt-1]);
-                        List<Building> bList = p.GetBuildings();
-                        if(bList.Count != 0){
-                        for(int i =0; i<bList.Count; i++)
+                        Console.WriteLine(Loc.Dict["load_choose"]);
+                        string? loadInput = Console.ReadLine();
+                        switch (loadInput)
                         {
-                            bList[i].Owner = p;
+                            case "1":
+                                Player p = SaveAndLoad.Load(loadList[inputInt-1]);
+                                List<Building> bList = p.GetBuildings();
+                                if(bList.Count != 0){
+                                    for(int i =0; i<bList.Count; i++)
+                                        {
+                                        bList[i].Owner = p;
+                                        }
+                                    }
+                            return(SaveAndLoad.Load(loadList[inputInt-1]));
+                            case "2":
+                                Console.WriteLine(Loc.Dict["sure_qu"]);
+                                Console.WriteLine(Loc.Dict["yes_no"]);
+                                string? deleteInput = Console.ReadLine();
+                                switch (deleteInput)
+                                {
+                                    case "1":
+                                        string localDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                                        string programPath = Path.Combine(localDataPath, "RSM", "saves");
+                                        string savePath = Path.Combine(programPath, $"save_{loadList[inputInt-1].ID}.json");
+                                        File.Delete(savePath);
+                                    break;
+                                    case "2":
+                                    break;
+                                    default:
+                                    Console.WriteLine(Loc.Dict["wrong_command"]);
+                                    break;
+                                }
+                            break;
+                            case "3":
+                            break;
+                            default:
+                                Console.WriteLine(Loc.Dict["wrong_command"]);
+                            break;
                         }
-                        }
-                        return(SaveAndLoad.Load(loadList[inputInt-1]));
                     }
             }
             else
             {
                 Console.WriteLine(Loc.Dict["wrong_command"]);
             }}
-        }
         else
         {
-            Console.WriteLine(Loc.Dict["save_not_foung"]);
+            Console.WriteLine(Loc.Dict["save_not_found"]);
             Console.ReadLine();
             return null;
-        }
+        }}
     }
     }
 
