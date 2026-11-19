@@ -162,13 +162,14 @@ public class Player : Entity
         this.Name = name;
         this.StorageFill();
     }
-    public Player(string name, int level, int xp, Dictionary<Resource, int> resDict, List<Building> buildList, string ID)
+    public Player(string name, int level, int xp, Dictionary<Resource, int> resDict, List<Building> buildList, string ID, float money)
     {
         this.ID = ID;
         this.Level = level;
         this.Expirience = xp;
         this.Name = name;
         this.StorageFill();
+        this.Money = money;
         foreach(var res in resDict)
         {
             this.AddResource(res.Key, res.Value);

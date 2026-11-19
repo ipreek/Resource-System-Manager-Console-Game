@@ -151,7 +151,7 @@ public class SaveAndLoad
             buildings.Add(newBuild);
         }
 
-        Player player = new Player(pC.Name, pC.Level, pC.XP, resDict, buildings, pC.ID);
+        Player player = new Player(pC.Name, pC.Level, pC.XP, resDict, buildings, pC.ID, pC.Money);
         return player;
     }
     }

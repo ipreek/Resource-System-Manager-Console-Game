@@ -92,7 +92,7 @@ public static class GameMethods
                 Gameplay.Exit();
                 return null;
             default:
-                Console.WriteLine("Wrong command! Try again.");
+                Console.WriteLine(Loc.Dict["wrong_command"]);
                 return null;
             }}
         return null;
@@ -129,7 +129,7 @@ public static class GameMethods
             }
             else
             {
-                string fileName = stream[0];
+                string fileName = stream[inputInt-1];
                 fileName = fileName.Replace("ResourceSystemManagerGame.Locals.", "");
                 fileName = fileName.Replace(".json", "");
                 Loc.GetLoc(fileName);
@@ -289,7 +289,13 @@ public static class GameMethods
         {
             player.RemoveResource(res.Key, res.Value);
             player.AddMoney(res.Key.Price*res.Value);
+            if (res.Value != 1){
             Console.Write(Loc.Dict["sell_res"], res.Value, res.Key.GenName, res.Key.Price*res.Value);
+            }
+            else
+            {
+                Console.Write(Loc.Dict["sell_res"], res.Value, res.Key.Name, res.Key.Price*res.Value);
+            }
         }
         #if !DEBUG
         (int Left, int Top) CursorPos = Console.GetCursorPosition();
