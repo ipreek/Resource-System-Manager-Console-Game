@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Locals\*.json" />
+    <EmbeddedResource Include="settings\*.json" />
   </ItemGroup>
 
 </Project>
