@@ -144,6 +144,10 @@ public static class Gameplay
                 player.AddMoney(1000000000);
                 break;
                 case "PRODUCE":
+                    foreach(var b in player.GetBuildings())
+                    {
+                        b.Produce(player);
+                    }
                 break;
                 default:
                     Console.WriteLine("Wrong command! Try again.");

@@ -11,16 +11,16 @@ public class Loc
 
     public static void GetLoc(string lang)
     {
-        var ass = Assembly.GetExecutingAssembly();
-        string resName = $"ResourceSystemManagerGame.Locals.{lang}.json";
-        using Stream? stream = ass.GetManifestResourceStream(resName);
+        string LocalApplicationData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        string rsmDataPath = Path.Combine(LocalApplicationData, "RSM", "Data", "Loc");
+        string resName = Path.Combine(rsmDataPath, $"{lang}.json");
 
-        if(stream == null)
+        if(!File.Exists(resName))
         {
-            Console.WriteLine(Loc.Dict["loc_error"]);
+            //Console.WriteLine(Loc.Dict["loc_error"]);
             return;
         }
-        using StreamReader reader = new StreamReader(stream);
+        using StreamReader reader = new StreamReader(resName);
         string jsonText = reader.ReadToEnd();
 
         Dict = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonText) ?? new Dictionary<string, string>();
