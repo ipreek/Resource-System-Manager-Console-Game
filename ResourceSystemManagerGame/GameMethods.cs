@@ -8,7 +8,6 @@ using System.Threading;
 using System.Reflection;
 using System.Text.Json;
 using System.IO;
-
 namespace RSM;
 
 public static class GameMethods

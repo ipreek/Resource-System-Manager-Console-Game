@@ -17,6 +17,7 @@ public class playerCopy
     public float Money {get;set;}
     public List<BuildCopy> BuildingList {get;set;}  = new List<BuildCopy>(); 
     public IDictionary<string, int> ResourceList {get;set;} = new Dictionary<string, int>();
+    public Dictionary<string, float> ResCopyList {get;set;} = new Dictionary<string, float>();
 }
 public class BuildCopy
 {
@@ -29,6 +30,12 @@ public class BuildCopy
     public int lastedSecs {get;set;}
 }
 
+public class ResCopy
+{
+    public string ID{get;set;}
+    public float Price{get;set;}
+}
+
 public class SaveAndLoad
 {
 
@@ -37,6 +44,15 @@ public class SaveAndLoad
     public static void Save(Player p)
     {
         List<BuildCopy> buildListCopy = new List<BuildCopy>();
+        List<ResCopy> ResCopyList_local = new List<ResCopy>();
+        List<Resource> ResList = Resource.ResourceList;
+        foreach(var res in ResList)
+        {
+            ResCopy resCopy = new ResCopy ();
+            resCopy.ID = res.ID;
+            resCopy.Price = res.Price;
+            ResCopyList_local.Add(resCopy);
+        }
         DateTime dt = DateTime.UtcNow;
             playerCopy playerC = new playerCopy
             {
@@ -47,7 +63,8 @@ public class SaveAndLoad
                 XP = p.Expirience,
                 Money = p.Money,
                 BuildingList = {},
-                ResourceList = {}
+                ResourceList = {},
+                ResCopyList = {}
             };
 
             foreach(var b in p.GetBuildings())
@@ -59,7 +76,10 @@ public class SaveAndLoad
             foreach(var res in p.GetStorage())
             {
                 playerC.ResourceList.Add(res.Key.ID, res.Value);
-
+            }
+            foreach(var resC in ResCopyList_local)
+            {
+                playerC.ResCopyList.Add(resC.ID, resC.Price);
             }
 
         string myDocs = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -149,6 +169,12 @@ public class SaveAndLoad
             Resource res = resType[0];
             Building newBuild = new Factory(res, bC.Name,null , bC.XP, bC.Level, bC.lastedSecs, bC.TotalIncome, bC.TotalSpend);
             buildings.Add(newBuild);
+        }
+        foreach(var resC in pC.ResCopyList)
+        {
+            List<Resource> findedRes = (resList.Where<Resource>(r => r.ID == resC.Key)).ToList<Resource>();
+            Resource neededRes = findedRes[0];
+            neededRes.Price = resC.Value;
         }
 
         Player player = new Player(pC.Name, pC.Level, pC.XP, resDict, buildings, pC.ID, pC.Money);
