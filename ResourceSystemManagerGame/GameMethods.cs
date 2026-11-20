@@ -283,19 +283,29 @@ public static class GameMethods
         #if !DEBUG
         Console.Clear();
         #endif
-        Console.WriteLine("Succesfully sell ");
+        bool IsSell = false;
         IDictionary<Resource, int> playerStorage = player.GetStorage();
+        foreach(var res in playerStorage)
+        {
+            if(res.Value != 0)
+            {
+                IsSell = true;
+            }
+        }
+        if(IsSell == true){
+        Console.WriteLine("Succesfully sell ");
         foreach(var res in playerStorage)
         {
             player.RemoveResource(res.Key, res.Value);
             player.AddMoney(res.Key.Price*res.Value);
-            if (res.Value != 1){
+            if (res.Value != 0){
+            if (res.Value != 1 && res.Value != 11 && (res.Value-1)%10!=0){
             Console.Write(Loc.Dict["sell_res"], res.Value, res.Key.GenName, res.Key.Price*res.Value);
             }
             else
             {
                 Console.Write(Loc.Dict["sell_res"], res.Value, res.Key.Name, res.Key.Price*res.Value);
-            }
+            }}
         }
         #if !DEBUG
         (int Left, int Top) CursorPos = Console.GetCursorPosition();
@@ -303,6 +313,11 @@ public static class GameMethods
         Console.Write("!");
         #endif
         Console.WriteLine(Loc.Dict["money_sell_count"], player.Money);
+        }
+        else
+        {
+            Console.WriteLine(Loc.Dict["not_sell"]);
+        }
     }
 
     private static void SellChoosedBuilding(Player player, Building build)

@@ -57,5 +57,6 @@
     "lang_list": "{0}.{1}",
     "loc_error": "Localisation error! File not found.",
     "loc_succ": "Language succesfully changed to english!",
-    "load_choose": "1.Load 2.Delete 3.Return"
+    "load_choose": "1.Load 2.Delete 3.Return",
+    "not_sell": "Nothing to sell:("
 }
