@@ -6,15 +6,15 @@ namespace RSM;
 //файл для класса построек и классов построек
 public class Building : Entity
 {
-    const int ammountMultiply = GameMethods.ammountMultiply;
-    const float xpMultiply = GameMethods.xpMultiply;
-    const float spendMultiply = GameMethods.spendMultiply;
-    const int spendAmmount = 20;
+    public static int ammountMultiply = GameMethods.ammountMultiply;
+    public static float xpMultiply = GameMethods.xpMultiply;
+    public static float spendMultiply = GameMethods.spendMultiply;
+    public static int spendAmmount;
     private float produceQ;
     private Resource produceType;
     private Player owner;
     protected int lastedSeconds = 0;
-    const int neededSeconds = 30;
+    public static int neededSeconds;
     private float totalSpending = 0;
     private float totalIncome = 0;
 

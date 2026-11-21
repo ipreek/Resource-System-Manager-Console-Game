@@ -9,9 +9,10 @@ namespace RSM
         {
             Gameplay.ProgramIsRunning = true;
             OnFirstLaunch.CreateJson();
-            Setting.GetCon();
-            Console.WriteLine("Loading...");
             Loc.GetLoc("eng");
+            Setting.GetCon();
+            Setting.GetResources();
+            Console.WriteLine("Loading...");
             Gameplay.Start();
         }
     }

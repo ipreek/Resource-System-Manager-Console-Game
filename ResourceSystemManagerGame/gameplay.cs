@@ -7,6 +7,7 @@ public static class Gameplay
 {
     public static bool ProgramIsRunning = false;
     public static Thread producingThread = new Thread(new ParameterizedThreadStart(threads.ProducingThread));
+    public static string version;
     static Gameplay(){
         producingThread.Name = "ProducingThread";
     }
@@ -50,7 +51,7 @@ public static class Gameplay
         Console.Clear();
         #endif
         while(ProgramIsRunning == true){
-        Console.WriteLine("Resource System Manager - console edition\n\t\t{0}", Setting.listOfConfig["version"]);
+        Console.WriteLine("Resource System Manager - console edition\n\t\t{0}", version);
         Player? player = null;
         while(player == null && ProgramIsRunning == true){
             player = GameMethods.Menu();

@@ -13,7 +13,7 @@ public abstract class Entity
     private string name;
     private int xp;
     private int lvl;
-    const float lvlPow = 1.2F;
+    public static float lvlPow;
 
     public string Name
     {
@@ -76,17 +76,33 @@ public class Resource
     private string buildName;
     private string genName;
     private string id;
-    private static readonly List<Resource> _resourceList = new List<Resource>();
+    private static List<Resource> _resourceList = new List<Resource>();
 
-    Resource(string Name, float Factor, float Price, bool IsProducable, Resource? resType, string BuildName, string Gen_name, string ID)
+    public Resource(string Name, float Factor, float Price, bool IsProducable, string IDProducedFrom, string BuildName, string Gen_name, string ID)
     {
-        genName = Gen_name; id=ID;
-        name = Name; factor = Factor; price = Price; isProducable = IsProducable; buildName = BuildName;
-        if (resType != null)
+        genName = Loc.Dict[Gen_name]; id=ID;
+        name = Loc.Dict[Name]; factor = Factor; price = Price; isProducable = IsProducable; buildName = Loc.Dict[BuildName];
+        if (IDProducedFrom != null)
         {
+            Resource resType = null;
+            foreach(Resource res in _resourceList)
+            {
+                if (res.ID == IDProducedFrom)
+                {
+                    resType = res;
+                }
+
+                
+            }
+                if(resType == null)
+                {
+                    var DefRes = new Resource("Default", 0.5F, 35F, false, null, "DefaultBuild", "Default", "default");
+                    resType = DefRes;
+                }
+
             resourceProducedFrom = resType;
         }
-        ResourceList.Add(this);
+        _resourceList.Add(this);
     }
     public static List<Resource> ResourceList => _resourceList;
     public string ID{get{return id;}}
@@ -98,12 +114,4 @@ public class Resource
     public string GenName{get{return genName;}}
     public Resource ResourceProducedFrom{get{return resourceProducedFrom;}}
 
-    public static void ResCreate(){
-    Resource Coal = new(Loc.Dict["res_Coal"], 0.7F, 57.14F, false, null, Loc.Dict["build_Coal"], Loc.Dict["gen_Coal"], "coal");
-    Resource Ore = new(Loc.Dict["res_Ore"], 1F, 40F, false, null, Loc.Dict["build_Ore"], Loc.Dict["gen_Ore"], "ore");
-    Resource Plant = new(Loc.Dict["res_Plant"], 1.2F, 33.33F, false, null, Loc.Dict["build_Plant"], Loc.Dict["gen_Plant"], "plant");
-    Resource Metal = new(Loc.Dict["res_Metal"], 0.8F, 75F, true, Ore, Loc.Dict["build_Metal"], Loc.Dict["gen_Metal"], "metal");
-    Resource Energy = new(Loc.Dict["res_Energy"], 0.56F, 167.41F, true, Coal, Loc.Dict["build_Energy"], Loc.Dict["gen_Energy"], "energy");
-    Resource Food = new(Loc.Dict["res_Food"], 0.9F, 104.16F, true, Plant, Loc.Dict["build_Food"], Loc.Dict["gen_Food"], "food");
-    }
 }

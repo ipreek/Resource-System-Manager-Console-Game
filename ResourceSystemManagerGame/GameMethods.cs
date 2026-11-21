@@ -12,11 +12,11 @@ namespace RSM;
 
 public static class GameMethods
 {
-    public const int ammountMultiply = 100;
-    public const float xpMultiply = 0.5F;
-    public const float spendMultiply = 0.1F;
-    public const int cashAmount = 10000;
-    public const int buildFactor = 250;
+    public static int ammountMultiply;
+    public static float xpMultiply;
+    public static float spendMultiply;
+    public static int cashAmount;
+    public static int buildFactor;
 
     public static bool IsOnlySpaces(string str)
     { 
@@ -57,14 +57,14 @@ public static class GameMethods
             Console.Clear();
             #endif
             Resource.ResourceList.Clear();
-                Resource.ResCreate();
+                Setting.GetResources();
                 return NewGame();
             case "2":
                 #if !DEBUG
                 Console.Clear();
                 #endif
                 Resource.ResourceList.Clear();
-                Resource.ResCreate();
+                Setting.GetResources();
                 Player player1 = null;
                 try{
                         player1 = Load();}catch (Exception ex)

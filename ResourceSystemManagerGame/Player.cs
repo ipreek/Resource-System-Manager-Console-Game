@@ -16,7 +16,7 @@ public class Player : Entity
     private float money;
     private bool hasDebt;
     private string id;
-    const int defaultXp = 10;
+    public static int defaultXp;
 
     private void StorageFill()
     {
