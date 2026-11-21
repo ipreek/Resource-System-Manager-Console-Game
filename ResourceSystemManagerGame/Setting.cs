@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Collections.Generic;
 using System.Collections;
+using System.Globalization;
 
 namespace RSM;
 
@@ -15,7 +16,7 @@ public class ResourceConfig
     public float Factor {get;set;}
     public float Price {get;set;}
     public bool IsProducable {get;set;}
-    public string IDProducedFrom {get;set;}
+    public List<string> IDProducedFrom {get;set;}
     public string BuildName {get;set;}
 
     public ResourceConfig(){}
@@ -47,11 +48,11 @@ public static class Setting
         Version = listOfConfig["Version"];
         DefaultPlayerXp = Int32.Parse(listOfConfig["DefaultPlayerXP"]);
         AmmountMultiply = Int32.Parse(listOfConfig["AmmountMultiply"]);
-        XPMultiply = float.Parse(listOfConfig["XPMultiply"]);
-        SpendMultiply = float.Parse(listOfConfig["SpendMultiply"]);
+        XPMultiply = float.Parse(listOfConfig["XPMultiply"], CultureInfo.InvariantCulture);
+        SpendMultiply = float.Parse(listOfConfig["SpendMultiply"], CultureInfo.InvariantCulture);
         CashAmount = Int32.Parse(listOfConfig["CashAmmount"]);
         BuildFactor = Int32.Parse(listOfConfig["BuildFactor"]);
-        EntityLvlPow = float.Parse(listOfConfig["EntityLvlPow"]);
+        EntityLvlPow = float.Parse(listOfConfig["EntityLvlPow"], CultureInfo.InvariantCulture);
         BuildingSpendAmmount = Int32.Parse(listOfConfig["BuildingSpendAmmount"]);
         BuildingNeededSecs = Int32.Parse(listOfConfig["BuildingNeededSecs"]);
 

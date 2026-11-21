@@ -201,8 +201,10 @@ public static class GameMethods
                 Console.WriteLine(Loc.Dict["build_in_list"], index2+1, b.ProduceType.BuildName, b.Name, b.Level, b.Expirience, b.GetXpCapForBuild(), b.ProduceType.Name);
                 if (b.ProduceType.IsProducable == true)
                 {
-                    Console.Write(Loc.Dict["consumed_res"], b.ProduceType.ResourceProducedFrom.Name);
-            }
+                    foreach(Resource resource in b.ProduceType.ResourceProducedFrom){
+                    Console.Write(Loc.Dict["consumed_res"], resource.Name);
+                    }
+                }
                 index2++;
                 if(index2%5 == 0)
                 {

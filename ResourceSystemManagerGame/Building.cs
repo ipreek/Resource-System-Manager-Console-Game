@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Security.AccessControl;
 #nullable disable warnings
 namespace RSM;
 
@@ -56,7 +57,7 @@ public class Building : Entity
         }
     }
     //используется для расчета трат(вызывается только если траты есть)
-    public bool CalculateSpend(Player player, Resource resType, int ammount, out int ammountSpend, out float moneySpend, out Resource returnType)
+    public bool CalculateSpend(Player player, Resource resType, int ammount, out int ammountSpend, out float moneySpend, out List<Resource> returnType)
             {
                 int playerLevel = player.Level;
                 int buildingLevel = this.Level;
@@ -68,9 +69,10 @@ public class Building : Entity
                 this.totalIncome += ammount*resType.Price;
                 if (resType.IsProducable == true){
                 ammountSpend = (int)((1/(playerLevel)+(buildingLevel*spendMultiply))*ammountMultiply);
-                returnType = resType.ResourceProducedFrom;
+                foreach(Resource res in resType.ResourceProducedFrom){
+                returnType.Add(res);
                 return true;
-                }
+                }}
                 return true;
     }
     public void CompleteSpend(Player player, Resource returnType, int ammount)
@@ -83,7 +85,9 @@ public class Building : Entity
             
             if (SpendResource != null)
             {
-                player.RemoveResource((Resource)SpendResource, ammountSpend);
+                foreach(var res in SpendResource){
+                player.RemoveResource((Resource)res, ammountSpend);
+                }
             }
             }
         catch(Exception ex)

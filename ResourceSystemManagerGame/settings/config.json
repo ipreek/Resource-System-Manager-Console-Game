@@ -1,11 +1,11 @@
 {
-    "Version": "1.2 build 221101",
+    "Version": "1.3 build 221102",
     "update": "true",
     "DefaultPlayerXP": "10",
     "AmmountMultiply": "100",
     "XPMultiply": "0,5",
     "SpendMultiply": "0,1",
-    "CashAmmount": "10000",
+    "CashAmmount": "1000",
     "BuildFactor": "250",
     "EntityLvlPow": "1,2",
     "BuildingSpendAmmount": "20",

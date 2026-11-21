@@ -29,7 +29,7 @@
         "Factor": 0.8,
         "Price": 75,
         "IsProducable": true,
-        "IDProducedFrom": "ore",
+        "IDProducedFrom": ["ore"],
         "BuildName": "build_Metal"},
         {"ID": "energy",
         "Name": "res_Energy",
@@ -37,7 +37,7 @@
         "Factor": 0.56,
         "Price": 167.41,
         "IsProducable": true,
-        "IDProducedFrom": "coal",
+        "IDProducedFrom": ["coal"],
         "BuildName": "build_Energy"},
         {"ID": "food",
         "Name": "res_Food",
@@ -45,6 +45,6 @@
         "Factor": 0.9,
         "Price": 104.16,
         "IsProducable": true,
-        "IDProducedFrom": "plant",
+        "IDProducedFrom": ["plant"],
         "BuildName": "build_Food"}
 ]

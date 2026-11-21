@@ -72,24 +72,25 @@ public class Resource
     private float factor;
     private float price;
     private bool isProducable;
-    private Resource resourceProducedFrom;
+    private List<Resource> resourceProducedFrom;
     private string buildName;
     private string genName;
     private string id;
     private static List<Resource> _resourceList = new List<Resource>();
 
-    public Resource(string Name, float Factor, float Price, bool IsProducable, string IDProducedFrom, string BuildName, string Gen_name, string ID)
+    public Resource(string Name, float Factor, float Price, bool IsProducable, List<string> IDProducedFrom, string BuildName, string Gen_name, string ID)
     {
         genName = Loc.Dict[Gen_name]; id=ID;
         name = Loc.Dict[Name]; factor = Factor; price = Price; isProducable = IsProducable; buildName = Loc.Dict[BuildName];
         if (IDProducedFrom != null)
         {
-            Resource resType = null;
+            foreach(string producedId in IDProducedFrom){
+            List<Resource> resType = new List<Resource>();
             foreach(Resource res in _resourceList)
             {
-                if (res.ID == IDProducedFrom)
+                if (res.ID == producedId)
                 {
-                    resType = res;
+                    resType.Add(res);
                 }
 
                 
@@ -97,11 +98,11 @@ public class Resource
                 if(resType == null)
                 {
                     var DefRes = new Resource("Default", 0.5F, 35F, false, null, "DefaultBuild", "Default", "default");
-                    resType = DefRes;
+                    resType.Add(DefRes);
                 }
 
             resourceProducedFrom = resType;
-        }
+        }}
         _resourceList.Add(this);
     }
     public static List<Resource> ResourceList => _resourceList;
@@ -112,6 +113,6 @@ public class Resource
     public bool IsProducable{get{return isProducable;}}
     public string BuildName{get{return buildName;}}
     public string GenName{get{return genName;}}
-    public Resource ResourceProducedFrom{get{return resourceProducedFrom;}}
+    public List<Resource> ResourceProducedFrom{get{return resourceProducedFrom;}}
 
 }
