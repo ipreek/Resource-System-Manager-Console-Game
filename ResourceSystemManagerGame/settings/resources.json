@@ -27,9 +27,9 @@
         "Name": "res_Metal",
         "GenName": "gen_Metal",
         "Factor": 0.8,
-        "Price": 75,
+        "Price": 120,
         "IsProducable": true,
-        "IDProducedFrom": ["ore"],
+        "IDProducedFrom": ["ore", "coal"],
         "BuildName": "build_Metal"},
         {"ID": "energy",
         "Name": "res_Energy",
@@ -43,8 +43,8 @@
         "Name": "res_Food",
         "GenName": "gen_Food",
         "Factor": 0.9,
-        "Price": 104.16,
+        "Price": 220.16,
         "IsProducable": true,
-        "IDProducedFrom": ["plant"],
+        "IDProducedFrom": ["plant", "energy"],
         "BuildName": "build_Food"}
 ]
