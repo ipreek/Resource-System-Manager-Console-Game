@@ -1,5 +1,5 @@
 {
-    "Version": "1.3 build 221104",
+    "Version": "1.3 build 241101",
     "update": "true",
     "DefaultPlayerXP": "10",
     "AmmountMultiply": "100",
@@ -9,5 +9,6 @@
     "BuildFactor": "250",
     "EntityLvlPow": "1,2",
     "BuildingSpendAmmount": "20",
-    "BuildingNeededSecs": "30"
+    "BuildingNeededSecs": "30",
+    "LengthOfUiDimension": "4"
 }

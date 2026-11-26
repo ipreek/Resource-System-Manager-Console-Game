@@ -13,6 +13,7 @@ namespace RSM
             Setting.GetCon();
             Setting.GetResources();
             Console.WriteLine("Loading...");
+
             Gameplay.Start();
         }
     }

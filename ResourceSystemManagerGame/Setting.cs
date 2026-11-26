@@ -33,7 +33,7 @@ public static class Setting
     private static int BuildingSpendAmmount {get;set;}
     private static int BuildingNeededSecs {get;set;}
     private static string Version {get;set;}
-    private static int RebirthClassicRequ {get;set;}
+    private static int LengthOfUiDimension {get;set;}
 
     public static Dictionary<string, string> listOfConfig {get;set;} = new Dictionary<string, string>();
     public static List<ResourceConfig> resListOfConfig {get;set;} = new List<ResourceConfig>();
@@ -56,7 +56,7 @@ public static class Setting
         EntityLvlPow = float.Parse(listOfConfig["EntityLvlPow"], CultureInfo.InvariantCulture);
         BuildingSpendAmmount = Int32.Parse(listOfConfig["BuildingSpendAmmount"]);
         BuildingNeededSecs = Int32.Parse(listOfConfig["BuildingNeededSecs"]);
-        RebirthClassicRequ = Int32.Parse(listOfConfig["RebirthClassicRequ"]);
+        LengthOfUiDimension = Int32.Parse(listOfConfig["LengthOfUiDimension"]);
 
         GameMethods.ammountMultiply = AmmountMultiply;
         GameMethods.buildFactor = BuildFactor;
@@ -68,7 +68,7 @@ public static class Setting
         Gameplay.version = Version;
         Building.neededSeconds = BuildingNeededSecs;
         Building.spendAmmount = BuildingSpendAmmount;
-        Player.classicRebirth = RebirthClassicRequ;
+        UiList<TextLabel>.LengthOfUiDimension = LengthOfUiDimension;
     }
 
     public static void GetResources()

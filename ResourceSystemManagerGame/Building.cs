@@ -109,7 +109,7 @@ public class Building : Entity
         Console.WriteLine(Loc.Dict["factory_work"]);
         #endif
 
-        int ammount = (int)(((produceQ*(playerLevel+(buildingLevel*spendMultiply)))*ammountMultiply)*(0.1*(player.Rebirthes+1)+1));
+        int ammount = (int)(((produceQ*(playerLevel+(buildingLevel*spendMultiply)))*ammountMultiply));
 
         CompleteSpend(player, resType, ammount);
     }

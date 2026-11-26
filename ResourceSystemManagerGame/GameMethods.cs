@@ -46,7 +46,13 @@ public static class GameMethods
     public static Player? Menu()
     {
         while(Gameplay.ProgramIsRunning == true){
-        Console.WriteLine(Loc.Dict["select_command"]);
+        TextLabel command = new TextLabel(String.Format($"\n{Loc.Dict["select_command"]}"));
+        /*Button newGame = new Button(Loc.Dict["start_menu"]);
+        Button loadGame = new Button(Loc.Dict["load_game"]);
+        Button changeLang = new Button(Loc.Dict["change_lang"]);
+        Button exit = new Button(Loc.Dict["exit_button"]);*/
+
+        //Button[] mainMenu = [newGame, loadGame, changeLang, exit];
         Console.WriteLine(Loc.Dict["start_menu"]);
         string? line = Console.ReadLine();
         if (line != null){

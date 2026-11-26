@@ -51,7 +51,8 @@ public static class Gameplay
         Console.Clear();
         #endif
         while(ProgramIsRunning == true){
-        Console.WriteLine("Resource System Manager - console edition\n\t\t{0}", version);
+        TextLabel name = new TextLabel(String.Format("Resource System Manager - console edition\n\t\t{0}", version));
+        name.Render();
         Player? player = null;
         while(player == null && ProgramIsRunning == true){
             player = GameMethods.Menu();
