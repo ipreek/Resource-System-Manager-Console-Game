@@ -1,43 +1,71 @@
 using System;
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks.Dataflow;
 
 namespace RSM;
 
-public abstract class UI
+public interface IRenderable
 {
-    public abstract void Render();
+    public void Render();
 }
-
-public class TextLabel : UI
+public class TextLabel : IRenderable 
 {
     public string Text {get;set;}
     public string RenderedText{get;set;}
-    public override void Render()
+    public List<object> paramList {get;set;} = new();
+    public void Render()
     {
-        Console.WriteLine(this.RenderedText);
+        foreach(object obj in paramList)
+        {   
+            RenderedText +=  obj;
+        }
+        Console.Write(this.RenderedText);
     }
 
 
-    public TextLabel(string text)
+    public TextLabel(string locDict, params object[] parametrs)
     {
-        this.Text = text;
+        string getloc = Loc.Dict[locDict];
+        foreach(object obj in parametrs)
+        {
+            paramList.Add(obj);
+        }
+        this.Text = getloc;
         RenderedText = Text;
     }
 }
 
-public class Button :TextLabel
+public delegate Player getPlayer();
+
+public class Button :TextLabel, IRenderable
 {
-    public Button(string text, Action<Player> action) : base(text)
+    public Button(string text, Action<object> action, params object[] listParams) : base(text,listParams)
     {
         PlayerAction += action;
     }
+    public Button(string text, getPlayer action, params object[] listParams) : base(text,listParams)
+    {
+        PlayerFunc += action;
+    }
 
-    public Action<Player> PlayerAction {get;set;}
+    public Button(string text, Action action, params object[] listParams) : base(text, listParams)
+    {
+        anonymAction += action;
+    }
+
+    public Button(string text, params object[] listParams) : base(text,listParams){}
+    public Action<object> PlayerAction {get;set;} = null;
+    public getPlayer PlayerFunc {get;set;}  = null;
+    public Action anonymAction {get;set;} = null;
     public bool IsChoosed{get;set;} = false;
 
-    public override void Render()
+    public void Render()
     {
+        foreach(object obj in this.paramList)
+        {
+            RenderedText += String.Format(", {0}", obj);
+        }
         Console.Write(this.RenderedText);
     }
 
@@ -51,10 +79,29 @@ public class Button :TextLabel
         this.IsChoosed = false;
         this.RenderedText = Text;
     }
-    public void OnClick(Player player)
+    public void OnClick(object obj)
     {
         if (this.IsChoosed){
-        PlayerAction(player);
+            if(PlayerAction != null)
+                PlayerAction(obj);
+        }
+    }
+
+    public void OnClick(out Player player)
+    {
+        player = null;
+        if(this.IsChoosed){
+        if(PlayerFunc!=null)
+            player = PlayerFunc();
+        }
+    }
+
+    public void OnClick()
+    {
+        if (this.IsChoosed)
+        {
+            if(anonymAction != null)
+                anonymAction();
         }
     }
 }
@@ -65,13 +112,19 @@ public class UiList<T>
     public T UiElement {get;set;}
     private List<List<TextLabel>> Dimensions {get;set;} = new List<List<TextLabel>>();
 
-    public UiList(params TextLabel[] uiElements)
+    public UiList(bool verticalRender, params TextLabel[] uiElements)
     {
         int index = 0;
-        int dims = -1;
+        int dims = 0;
         int paramLength = uiElements.Count();
-
-        int dimAmmount = paramLength/LengthOfUiDimension;
+        int dimAmmount = 0;
+        if (verticalRender == false){
+            dimAmmount = paramLength/LengthOfUiDimension;
+        }
+        else
+        {
+            dimAmmount = paramLength-1;
+        }
 
         for (int i = 0; i<=dimAmmount; i++){
             List<TextLabel> localList = new List<TextLabel>();
@@ -80,6 +133,10 @@ public class UiList<T>
 
         foreach(TextLabel element in uiElements)
         {
+            if (element is not Button)
+            {
+                this.Dimensions[0].Add(element);
+            }else{
             if (index % LengthOfUiDimension != 0)
             {
                 this.Dimensions[dims].Add(element);
@@ -89,8 +146,19 @@ public class UiList<T>
                 dims++;
                 this.Dimensions[dims].Add(element);
             }
-            index++;
+            if(verticalRender==false){index++;}
+            }
         }
+            int currentLeng = Dimensions[0].Count;
+            for(int i =0; i< currentLeng; i++)
+            {
+                if(Dimensions[0][i] is InputField inputField)
+                {
+                    Dimensions[0].RemoveAt(i);
+                    Dimensions[0].Add(inputField);
+                    break;
+                }
+            }
     }
 
     public TextLabel GetElement(int dim, int element) => this.Dimensions[dim][element];
@@ -120,21 +188,27 @@ public class UiList<T>
         {
             Console.Write("\n");
             foreach(TextLabel tl in list)
-            {
+            {   if(tl is Button){
                 sum++;
                 string newText = String.Format($"{sum}.{tl.Text} ");
                 if ((tl as Button).IsChoosed == false){
                 tl.RenderedText = newText;}
                 tl.Render();
+                
+                }
+                else
+                {
+                    tl.Render(); Console.Write("\n");
+                }
             }
         }
     }
 
-    public void Move(Player player, out Button? button)
+    public void Move(out Button? button)
     {
         Pointer MovingPointer = new Pointer();
-        Button? selectedButton = (Button)Dimensions[0][0];
-        Button? lastButton = (Button)Dimensions[0][0];
+        Button? selectedButton = (Button)Dimensions[1][0];
+        Button? lastButton = (Button)Dimensions[1][0];
         button = null;
         bool breakTheCycle = false;
 
@@ -150,11 +224,12 @@ public class UiList<T>
             Console.Clear();
             #endif
             RenderAll();
+            if(Console.KeyAvailable){
             var key = Console.ReadKey(true);
             switch (key.Key)
             {
                 case ConsoleKey.DownArrow:
-                    if(MovingPointer.Y != (Dimensions.Count-1) && (Dimensions[MovingPointer.Y+1].Count-1 >= MovingPointer.X)){
+                    if(MovingPointer.Y != (Dimensions.Count-1) && (Dimensions[MovingPointer.Y].Count-1 >= MovingPointer.X)){
                         MovingPointer.Y++;
                     }
                 break;
@@ -163,10 +238,10 @@ public class UiList<T>
                     {
                         MovingPointer.X=0;
                         MovingPointer.Y++;
-                    }else if(MovingPointer.X == (Dimensions[MovingPointer.Y].Count-1) && MovingPointer.Y == (Dimensions.Count - 1))
+                    }else if(MovingPointer.X == (Dimensions[MovingPointer.Y].Count-1) && MovingPointer.Y == (Dimensions.Count-1))
                     {
                         MovingPointer.X=0;
-                        MovingPointer.Y=0;
+                        MovingPointer.Y=1;
                     }
                     else
                     {
@@ -174,11 +249,11 @@ public class UiList<T>
                     }
                 break;
                 case ConsoleKey.LeftArrow:
-                    if(MovingPointer.X==0 && MovingPointer.Y == 0)
+                    if(MovingPointer.X==0 && MovingPointer.Y == 1)
                     {
                         MovingPointer.Y = Dimensions.Count-1;
                         MovingPointer.X = Dimensions[MovingPointer.Y].Count-1;
-                    }else if(MovingPointer.X==0 && MovingPointer.Y != 0)
+                    }else if(MovingPointer.X==0 && MovingPointer.Y != 1)
                     {
                         MovingPointer.Y--;
                         MovingPointer.X = Dimensions[MovingPointer.Y].Count-1;
@@ -189,7 +264,7 @@ public class UiList<T>
                     }
                 break;
                 case ConsoleKey.UpArrow:
-                    if(MovingPointer.Y != 0)
+                    if(MovingPointer.Y != 1)
                     {
                         MovingPointer.Y--;
                     }
@@ -210,7 +285,8 @@ public class UiList<T>
             {
                 break;
             }
-            
+            }
+            Thread.Sleep(50);
         }
     }
 
@@ -225,7 +301,7 @@ public class Pointer
 
     public Pointer()
     {
-        this.Y=0;
+        this.Y=1;
         this.X=0;
     }
 
@@ -234,5 +310,24 @@ public class Pointer
         SelectedButton = (Button)list[Y][X];
         SelectedButton.Choose();
         element = SelectedButton;
+    }
+}
+
+public class InputField : TextLabel, IRenderable
+{
+
+    public object Input {get;set;}
+    public InputField (string text, out object input) : base(text)
+    {
+        input = null;
+        this.Input = null;
+        this.Text = text;
+        this.RenderedText = text;
+    }
+
+    public void Render()
+    {
+        Console.WriteLine(RenderedText);
+        this.Input = Console.ReadLine();
     }
 }

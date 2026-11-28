@@ -8,6 +8,8 @@ using System.Threading;
 using System.Reflection;
 using System.Text.Json;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Reflection.Metadata.Ecma335;
 namespace RSM;
 
 public static class GameMethods
@@ -45,73 +47,44 @@ public static class GameMethods
 
     public static Player? Menu()
     {
-        while(Gameplay.ProgramIsRunning == true){
-        TextLabel command = new TextLabel(String.Format($"\n{Loc.Dict["select_command"]}"));
-        /*Button newGame = new Button(Loc.Dict["start_menu"]);
-        Button loadGame = new Button(Loc.Dict["load_game"]);
-        Button changeLang = new Button(Loc.Dict["change_lang"]);
-        Button exit = new Button(Loc.Dict["exit_button"]);*/
 
-        //Button[] mainMenu = [newGame, loadGame, changeLang, exit];
-        Console.WriteLine(Loc.Dict["start_menu"]);
-        string? line = Console.ReadLine();
-        if (line != null){
-        switch (line)
+        TextLabel name = new TextLabel("game_title", Gameplay.version);
+        getPlayer newGame = NewGame;
+        getPlayer loadGame = Load;
+        Action changeLang = ChangeLang;
+        Action exit = Gameplay.Exit;
+        Button newGameButt = new Button("start_menu", newGame);
+        Button loadGameButt = new Button("load_game", loadGame);
+        Button changeLangButt = new Button("change_lang", changeLang);
+        Button exitButt = new Button("exit_button", exit);
+
+        UiList<TextLabel> menuList = new UiList<TextLabel>(true ,name, newGameButt, loadGameButt, changeLangButt, exitButt);
+        menuList.Move(out Button selected);
+
+        if(selected.anonymAction!= null)
         {
-            case "1":
-            #if !DEBUG
-            Console.Clear();
-            #endif
-            Resource.ResourceList.Clear();
-                Setting.GetResources();
-                return NewGame();
-            case "2":
-                #if !DEBUG
-                Console.Clear();
-                #endif
-                Resource.ResourceList.Clear();
-                Setting.GetResources();
-                Player player1 = null;
-                try{
-                        player1 = Load();}catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
-                if(player1!=null){
-                return player1;
-                        }
-                        else
-                        {
-                            break;
-                        }
-            case "3":
-            #if !DEBUG
-            Console.Clear();
-            #endif
-            ChangeLang();
-            break;
-            case "4":
-            #if !DEBUG
-                Console.Clear();
-                #endif
-                Gameplay.Exit();
-                return null;
-            default:
-                Console.WriteLine(Loc.Dict["wrong_command"]);
-                return null;
-            }}
+            selected.OnClick();
+            return null;
+        }
+        if(selected.PlayerFunc != null)
+        {
+            selected.OnClick(out Player player);
+            return player;
+        }
+
         return null;
         }
-        return null;
-    }
 
     public static void ChangeLang()
     {
-        Console.WriteLine(Loc.Dict["choose_lang"]);
+        TextLabel langMenu = new TextLabel("choose_lang");
         int index = 1;
         var ass = Assembly.GetExecutingAssembly();
         string[] stream = ass.GetManifestResourceNames();
+        string title = "";
+        List<TextLabel> listOfElements = new();
         List<string> files = new();
+        listOfElements.Add(langMenu);
         foreach(string str in stream)
         {
             if(str.Contains("Locals")){
@@ -119,38 +92,44 @@ public static class GameMethods
             StreamReader sr = new StreamReader(fstr);
             string str11 = sr.ReadToEnd();
             Dictionary<string, string> jsonstr = JsonSerializer.Deserialize<Dictionary<string,string>>(str11);
-            Console.WriteLine(Loc.Dict["lang_list"], index, jsonstr["title"]);
+            title = jsonstr["title"];
+            Action<object> changelang = Loc.GetLoc;
+            Button lang = new Button(title, changelang);
+            listOfElements.Add(lang);
             files.Add(str);
             index++;}
         }
-        Console.WriteLine(Loc.Dict["exit_button"], index);
-        string input = Console.ReadLine();
+        Button exitButt = new Button("exit_button");
+        listOfElements.Add(exitButt);
+        TextLabel[] arrayOfLang = listOfElements.ToArray();
+        UiList<TextLabel> chooseLang = new UiList<TextLabel>(true, arrayOfLang);
+        List<TextLabel> listOfLang = listOfElements;
+        listOfLang.Remove(exitButt);
+        listOfLang.Remove(langMenu);
 
-        if(Int32.TryParse(input, out int inputInt) == true)
+        chooseLang.Move(out Button button);
+
+        if (button.anonymAction != null)
         {
-            if(inputInt == index)
-            {
-                return;
-            }
-            else
-            {
-                string fileName = stream[inputInt-1];
-                fileName = fileName.Replace("ResourceSystemManagerGame.Locals.", "");
-                fileName = fileName.Replace(".json", "");
-                Loc.GetLoc(fileName);
-                return;
-            }
+            button.anonymAction();
         }
-        else
+        if (button.PlayerAction != null)
         {
-            Console.WriteLine(Loc.Dict["wrong_command"]);
+            int indexAtLangList = listOfLang.FindIndex(b => b.Equals(button));
+            string fileName = stream[indexAtLangList];
+            fileName = fileName.Replace("ResourceSystemManagerGame.Locals.", "");
+            fileName = fileName.Replace(".json", "");
+            button.PlayerAction(fileName);
         }
+                return;
     }
 
     public static Player NewGame()
     {
-        while(true){
-        Console.WriteLine(Loc.Dict["new_char_name"]);
+        InputField newCharName = new InputField("new_char_name", out object Name);
+        Name = (string)Name;
+        newCharName.Render();
+        
         Player player = new Player();
         string? lastId = Gameplay.GetId(out lastId) ? lastId : null;
         string Id;
@@ -165,7 +144,7 @@ public static class GameMethods
             }
         try{
 #pragma warning disable CS8601 // Possible null reference assignment.
-                player.Name = Console.ReadLine();
+                player.Name = (string)newCharName.Input;
 #pragma warning restore CS8601 // Possible null reference assignment.
                 player.ID = Id;
         return player;
@@ -173,8 +152,8 @@ public static class GameMethods
             {
                 Console.WriteLine(ex.Message);
             }
+            return null;
         }
-    }
 
     public static void Waiting(Player player)
     {
@@ -188,53 +167,73 @@ public static class GameMethods
             IEnumerable<Building> buildings = player.GetBuildings();
             int index1 = 0;
             int index2 = 0;
+            List<TextLabel> listOfElements = new List<TextLabel>();
 
-            Console.WriteLine(Loc.Dict["info_title"], player.Name, player.ID, player.Level, player.Expirience, player.GetXpCapForPlayer(), player.Money);
-            Console.WriteLine(Loc.Dict["msg_storage"]);
+            TextLabel title = new TextLabel("info_title", player.Name, player.ID, player.Level, player.Expirience, player.GetXpCapForPlayer(), player.Money);
+            TextLabel storageTitel = new TextLabel("msg_storage");
+            listOfElements.Add(title);
+            listOfElements.Add(storageTitel);
             foreach(var r in storage)
             {
-                Console.Write($"{r.Key.Name}: {r.Value} ");
-                index1++;
-                if(index1%2 == 0)
-                {
-                    Console.Write("\n");
-                }
+                TextLabel resLabel = new TextLabel("res_list", r.Key.Name, r.Value);
+                listOfElements.Add(resLabel);
+                if(index1 %2 == 0)
+            {
+                resLabel.Text = resLabel.Text + "\n";
             }
-            Console.WriteLine(Loc.Dict["building_list"]);
-        
+                index1++;
+            }
+
+            TextLabel bList = new TextLabel("building_list");
+            listOfElements.Add(bList);
+
             foreach (var b in buildings)
             {
-                Console.WriteLine(Loc.Dict["build_in_list"], index2+1, b.ProduceType.BuildName, b.Name, b.Level, b.Expirience, b.GetXpCapForBuild(), b.ProduceType.Name);
+                TextLabel bLabel = new TextLabel("build_in_list", index2+1, b.ProduceType.BuildName, b.Name, b.Level, b.Expirience, b.GetXpCapForBuild(), b.ProduceType.Name);
                 if (b.ProduceType.IsProducable == true)
                 {
                     foreach(Resource resource in b.ProduceType.ResourceProducedFrom){
-                    Console.Write(Loc.Dict["consumed_res"], resource.Name);
+                    bLabel.Text = bLabel.Text + String.Format(Loc.Dict["consumed_res"], resource.Name);
                     }
                 }
+                listOfElements.Add(bLabel);
                 index2++;
-                if(index2%5 == 0)
-                {
-                    Console.Write("\n");
-                }
             }
+
+            Button exitButt = new Button("exit_button");
+            listOfElements.Add(exitButt);
+
+            TextLabel[] ArrayOE = listOfElements.ToArray();
+
+            UiList<TextLabel> uiList = new UiList<TextLabel>(true, ArrayOE);
+            uiList.Move(out Button exit);
+
+            exit.OnClick();
         }
 
-    public static void BuyBuilding(Player player,Resource res, float Price)
+    public static void BuyBuilding(object obj)
     {
+        object[] listOfParams = (object[])obj;
+        Player player = (Player)listOfParams[0];
+        Resource resType = (Resource)listOfParams[1];
+        float Price = (float)listOfParams[2];
         #if !DEBUG
         Console.Clear();
         #endif
-        Console.WriteLine(Loc.Dict["build_new_name"]);
-        string? name = Console.ReadLine();
+        InputField buildNewName = new InputField(Loc.Dict["build_new_name"], out object buildName);
+
+        buildNewName.Render();
+
+        string name = (string)buildNewName.Input;
         if (name != ""){
-        Factory factory = new Factory(res, name, player);
+        Factory factory = new Factory(resType, name, player);
         player.RemoveMoney(Price);
         player.AddBuilding(factory);
         factory.TotalSpending += Price;
         }
         else
         {
-            Factory factory = new Factory(res, "Default", player);
+            Factory factory = new Factory(resType, "Default", player);
             player.RemoveMoney(Price);
             player.AddBuilding(factory);
             factory.TotalSpending += Price;
@@ -246,44 +245,44 @@ public static class GameMethods
         #if !DEBUG
         Console.Clear();
         #endif
-        while(true){
-        int index = 0;
-        Console.WriteLine(Loc.Dict["money_ammount"], player.Money);
-        Console.WriteLine(Loc.Dict["select_build"]);
-        IEnumerable<Resource> resEnum = Resource.ResourceList;
+
+        List<TextLabel> listofElements = new();
+        TextLabel money = new TextLabel("money_ammount", player.Money);
+        TextLabel selectBuild = new TextLabel("select_build");
+        listofElements.Add(money);
+        listofElements.Add(selectBuild);
+        List<Resource> resEnum = Resource.ResourceList;
         foreach(Resource res in resEnum)
         {
-            Console.Write(Loc.Dict["build_in_buy_list"], index+1, res.BuildName, res.Price*buildFactor);
-            index++;
-            if (index % 3 == 0)
-            {
-                Console.Write("\n");
-            }
+           Action<object> action = BuyBuilding;
+           Button bInBuyList = new Button("build_in_buy_list", action,res.BuildName, res.Price*buildFactor);
+           listofElements.Add(bInBuyList);
         }
 
-        Console.WriteLine(Loc.Dict["exit_button"], index+1);
+        Button exitButt = new Button("exit_button");
+        listofElements.Add(exitButt);
+        List<TextLabel> listOfBuild = listofElements;
+        listOfBuild.Remove(money);
+        listOfBuild.Remove(selectBuild);
+        listOfBuild.Remove(exitButt);
 
-        string? input = Console.ReadLine();
-        float Price = 0;
-        Resource? resType = null;
-        IReadOnlyList<Resource> resList = Resource.ResourceList;
+        TextLabel[] arrayOE = listofElements.ToArray();
 
-            if(input == (index+1).ToString())
-            {
-                Gameplay.Update(player);
-                break;
-            }else if(Int32.TryParse(input, out int integer) == true && integer > 0 && integer <(index+1))
-            {
-                resType = resList[integer-1];
-                Price = resType.Price*buildFactor;
-                BuyBuilding(player, resType, Price);
-            }
-            else
-            {
-                Console.WriteLine(Loc.Dict["wrong_command"]);
-            }
+        UiList<TextLabel> bUiBuy = new UiList<TextLabel>(true, arrayOE);
+        bUiBuy.Move(out Button button);
+        Resource resType = null;
+        float Price = 0F;
 
-        }}
+        if(button.PlayerAction != null)
+        {
+            int indexAtList = listOfBuild.FindIndex(i=>i.Equals(button));
+            resType = resEnum[indexAtList];
+            Price = resType.Price*buildFactor;
+            object[] paramList = {player, resType, Price};
+            button.OnClick(paramList);
+        }
+
+}
 
     public static void SellResources(Player player)
     {

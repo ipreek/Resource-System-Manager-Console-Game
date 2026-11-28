@@ -9,8 +9,9 @@ public class Loc
 {
     public static Dictionary<string, string> Dict = new Dictionary<string, string>();
 
-    public static void GetLoc(string lang)
+    public static void GetLoc(object language)
     {
+        string lang = (string)language;
         string LocalApplicationData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         string rsmDataPath = Path.Combine(LocalApplicationData, "RSM", "Data", "Loc");
         string resName = Path.Combine(rsmDataPath, $"{lang}.json");
